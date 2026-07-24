@@ -3,11 +3,21 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Mapping
 
 import numpy as np
 import pandas as pd
 
 from isrs_scl.constants import C_M_PER_S
+
+
+BAND_ORDER: tuple[str, ...] = ("S", "C", "L")
+DEFAULT_BAND_EDGES_NM: dict[str, tuple[float, float]] = {
+    "S": (1460.0, 1530.0),
+    "C": (1530.0, 1565.0),
+    "L": (1565.0, 1625.0),
+}
+VALID_GRID_MODES: tuple[str, ...] = ("full_scl", "paper_240_subset")
 
 
 @dataclass(frozen=True)
@@ -54,13 +64,41 @@ class OpticalGrid:
         )
 
 
-def band_from_wavelength(wavelength_nm: np.ndarray) -> np.ndarray:
-    wl = np.asarray(wavelength_nm)
-    return np.select(
-        [wl < 1530.0, wl < 1565.0, wl <= 1625.0],
-        ["S", "C", "L"],
-        default="OUT",
-    ).astype("U3")
+def _normalize_band_edges(
+    edges_nm: Mapping[str, tuple[float, float]] | None = None,
+) -> dict[str, tuple[float, float]]:
+    edges = dict(edges_nm or DEFAULT_BAND_EDGES_NM)
+    missing = [band for band in BAND_ORDER if band not in edges]
+    if missing:
+        raise ValueError(f"Missing optical band edge definitions for {missing}")
+    normalized = {band: tuple(map(float, edges[band])) for band in BAND_ORDER}
+    for band, (low, high) in normalized.items():
+        if not low < high:
+            raise ValueError(f"Invalid {band}-band wavelength edges: {low:g}..{high:g} nm")
+    if not (
+        normalized["S"][0] < normalized["S"][1] <= normalized["C"][0]
+        and normalized["C"][0] < normalized["C"][1] <= normalized["L"][0]
+        and normalized["L"][0] < normalized["L"][1]
+    ):
+        raise ValueError("S/C/L band edges must be ordered and non-overlapping")
+    return normalized
+
+
+def band_from_wavelength(
+    wavelength_nm: np.ndarray,
+    edges_nm: Mapping[str, tuple[float, float]] | None = None,
+) -> np.ndarray:
+    wl = np.asarray(wavelength_nm, dtype=float)
+    edges = _normalize_band_edges(edges_nm)
+    labels = np.full(wl.shape, "OUT", dtype="U3")
+    for band in BAND_ORDER:
+        low, high = edges[band]
+        if band == BAND_ORDER[-1]:
+            mask = (wl >= low) & (wl <= high)
+        else:
+            mask = (wl >= low) & (wl < high)
+        labels[mask] = band
+    return labels
 
 
 def _full_grid(
@@ -94,7 +132,7 @@ def build_grid(grid_cfg: dict) -> OpticalGrid:
         start = max(0, min(full.size - n, center_index - n // 2))
         frequencies = full[start : start + n]
     else:
-        raise ValueError(f"Unsupported grid mode {mode!r}")
+        raise ValueError(f"Unsupported grid mode {mode!r}; use one of {VALID_GRID_MODES}")
 
     wavelengths_nm = C_M_PER_S / frequencies * 1e9
     bands = band_from_wavelength(wavelengths_nm)
