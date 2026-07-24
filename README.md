@@ -64,6 +64,37 @@ Use the physically limited paper comparison explicitly:
 python run_all_experiments.py --config config.yaml --grid-mode paper_240_subset
 ```
 
+## Full S- and L-band workflow
+
+The default final configuration already targets the full 1460–1625 nm S+C+L wavelength window with 50-GHz spacing. For the full-band upgrade path, first verify that the generated channel grid actually covers the S and L bands before running the expensive DSP, uncertainty and validation stages:
+
+```bash
+python scripts/full_band_s_l_report.py --config config_q2_final.yaml \
+  --output-json runs/full_scl_grid_summary.json \
+  --band-csv runs/full_scl_band_coverage.csv
+```
+
+Then run a full-grid debug study:
+
+```bash
+python -m isrs_scl.cli --config config_q2_final.yaml --debug \
+  --grid-mode full_scl \
+  --run-id full-scl-debug-001 \
+  --overwrite \
+  --allow-untracked-provenance
+```
+
+After the run finishes, summarize the S- and L-band numerical evidence from the generated results directory:
+
+```bash
+python scripts/full_band_s_l_report.py --config config_q2_final.yaml \
+  --results-dir runs/full-scl-debug-001/results \
+  --output-json runs/full-scl-debug-001/metadata/full_s_l_summary.json \
+  --band-csv runs/full-scl-debug-001/metadata/full_s_l_grid_coverage.csv
+```
+
+For a journal-ready claim, the S- and L-band outputs should not be reported from this debug run alone. They must be regenerated in publication mode after replacing default Raman, amplifier, attenuation and validation data with traceable calibrated evidence.
+
 ## Publication gate
 
 The run writes `VALIDATION_STATUS.json`. Results are marked `UNVALIDATED_DEFAULTS` until the configuration metadata is changed after external calibration and an external-validation CSV is provided. This prevents accidental use of illustrative defaults as journal evidence.
