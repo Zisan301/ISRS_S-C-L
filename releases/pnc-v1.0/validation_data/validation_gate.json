@@ -1,0 +1,27 @@
+﻿{
+  "identity_overlap_count": {
+    "observed": 0.0,
+    "threshold": 0.0,
+    "passed": true
+  },
+  "holdout_coverage": {
+    "observed": 1.0,
+    "threshold": 1.0,
+    "passed": true
+  },
+  "holdout_gsnr_rmse_db": {
+    "observed": 0.389,
+    "threshold": 1.0,
+    "passed": true
+  },
+  "holdout_absolute_bias_db": {
+    "observed": 0.211,
+    "threshold": 0.750,
+    "passed": true
+  },
+  "calibration_loo_rmse_db": {
+    "observed": 0.466,
+    "threshold": 1.0,
+    "passed": true
+  }
+}
