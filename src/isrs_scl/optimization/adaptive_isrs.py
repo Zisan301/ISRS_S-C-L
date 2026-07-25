@@ -187,7 +187,8 @@ class AdaptiveLaunchOptimizer:
         return float(minimum - tau * np.log(np.mean(np.exp(-(array - minimum) / tau))))
 
     def _metrics(self, link: LinkModel, profile: np.ndarray, spans: int) -> dict[str, float]:
-        result = link.evaluate(dbm_to_w(profile), spans)
+        evaluator = getattr(link, "evaluate_recursive", link.evaluate)
+        result = evaluator(dbm_to_w(profile), spans)
         ngmi = np.asarray(getattr(result, "ngmi", []), dtype=float)
         if ngmi.size == 0:
             raise ValueError("Link result must expose a non-empty ngmi array")
