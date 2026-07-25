@@ -1,0 +1,6 @@
+requirement,observed,threshold,passed
+identity_overlap_count,0.0,0.0,True
+holdout_coverage,1.0,1.0,True
+holdout_gsnr_rmse_db,0.389,1.0,True
+holdout_absolute_bias_db,0.211,0.75,True
+calibration_loo_rmse_db,0.466,1.0,True
