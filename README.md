@@ -83,3 +83,28 @@ The run writes `VALIDATION_STATUS.json`. Results are marked `UNVALIDATED_DEFAULT
 ## Model attribution
 
 The closed-form SPM/XPM implementation follows Eqs. (10) and (11) of D. Semrau, R. I. Killey and P. Bayvel, *Journal of Lightwave Technology*, 2019. Cite the original papers in `references.bib`. The implementation in this repository is independently written and released under MIT; it is not a copy of third-party source code.
+
+## PNC v1.0 manuscript validation release
+
+The folder releases/pnc-v1.0/ contains the frozen validation evidence for the Springer Photonic Network Communications manuscript version.
+
+Supported claim:
+
+- The framework targets ISRS-aware S+C+L optical-link GSNR modelling.
+- The currently frozen held-out external verification is local C-band GNPy cross-tool verification only.
+- The release reproduces the manuscript-reported held-out validation metrics from one command.
+
+Reproduce the validation numbers:
+
+python releases/pnc-v1.0/reproduce_paper.py
+
+Expected key output:
+
+PASS: held-out validation rows reproduce the paper-reported metrics.
+Raw held-out RMSE: 2.804 dB
+Corrected held-out RMSE: 0.389 dB
+Corrected held-out bias: 0.211 dB
+
+Important limitation:
+
+Do not claim full S+C+L external validation until S-band, C-band and L-band held-out references are committed and reproduced.
