@@ -1,0 +1,26 @@
+{
+  "config": "config_q2_final.yaml",
+  "grid_mode": "paper_240_subset",
+  "n_channels": 240,
+  "spans": [
+    1,
+    4,
+    8,
+    10
+  ],
+  "launch_powers_dbm": [
+    -2.0,
+    0.0,
+    2.0
+  ],
+  "nli_model": "power_profile_gn",
+  "threshold_db": 0.25,
+  "max_abs_delta_db": 0.7920031143698871,
+  "within_threshold": false,
+  "outputs": {
+    "channel_deltas_csv": "releases\\pnc-v1.0\\results\\multispan_accumulation_channel_deltas.csv",
+    "summary_csv": "releases\\pnc-v1.0\\results\\multispan_accumulation_summary.csv",
+    "span_records_csv": "releases\\pnc-v1.0\\results\\multispan_accumulation_span_records.csv"
+  },
+  "interpretation": "If within_threshold is true, analytical multi-span scaling may be defensible for this tested grid/power/span matrix. If false, recursive propagation should be used or the approximation limits must be reported."
+}
