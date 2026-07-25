@@ -1,7 +1,7 @@
 {
   "release": "pnc-v1.0",
-  "generated_at_utc": "2026-07-25T18:03:07.174484+00:00",
-  "git_commit_sha": "e44829db6d8b4462cffee8a0983403b03d61c805",
+  "generated_at_utc": "2026-07-25T18:05:11.822347+00:00",
+  "git_commit_sha": "c8d2a4d0797c3e6b39a6f9cb8d150f3915027453",
   "git_branch": "pnc-submission-upgrade",
   "python_version": "3.12.7 (tags/v3.12.7:0b05ead, Oct  1 2024, 03:06:41) [MSC v.1941 64 bit (AMD64)]",
   "platform": "Windows-11-10.0.22000-SP0",
@@ -29,8 +29,8 @@
     },
     {
       "path": "README.md",
-      "size_bytes": 1514,
-      "sha256": "5d0694b261339ca41256bb8f9d79647b9bd8e6c32e3d71de05a9cdbf698a4505"
+      "size_bytes": 1549,
+      "sha256": "b7c288f71328b41f6ee583059c92e2c7ba1eab17a3dd2d3f58b5c0b311acfdbe"
     },
     {
       "path": "reproduce_paper.py",
@@ -50,7 +50,7 @@
     {
       "path": "results/generated_validation_reproduction.json",
       "size_bytes": 1750,
-      "sha256": "ca9bf82e101e477ad8e903ce4c2f8e6944c4c372e0ad95316ccfef6870705779"
+      "sha256": "163e95b043883274b74f6df0d1dfc86f2e526e56d12f69eb1ba2c51e802e0db6"
     },
     {
       "path": "validation_data/heldout_row_level_comparison.csv",
