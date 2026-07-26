@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Strict GNPy parser that refuses to duplicate one GNPy channel for multiple target wavelengths.
+r"""Strict GNPy parser that refuses to duplicate one GNPy channel for multiple target wavelengths.
 
 Use this instead of the earlier loose parser when building publication evidence.
 
