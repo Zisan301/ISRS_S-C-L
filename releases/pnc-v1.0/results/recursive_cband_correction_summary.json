@@ -1,0 +1,223 @@
+{
+  "note": "Diagnostic only. Correction is trained on calibration rows and evaluated on held-out rows.",
+  "config": "config_q2_final.yaml",
+  "grid_mode": "paper_240_subset",
+  "n_channels": 240,
+  "calibration_file": "E:\\VS Code\\ISRS_S-C-L\\releases\\pnc-v1.0\\validation_data\\preliminary_cband_external_validation_comparisons.csv",
+  "heldout_file": "E:\\VS Code\\ISRS_S-C-L\\releases\\pnc-v1.0\\validation_data\\heldout_row_level_comparison.csv",
+  "calibration_rows": 9,
+  "heldout_rows": 9,
+  "candidate_models": [
+    "none",
+    "constant",
+    "wavelength_linear",
+    "span_log_linear",
+    "wavelength_span_linear"
+  ],
+  "best_model_by_calibration_leave_one_out_rmse": "wavelength_span_linear",
+  "model_summaries": {
+    "none": {
+      "coefficients": [],
+      "calibration_raw": {
+        "n": 9,
+        "rmse_db": 0.81217747948662,
+        "mae_db": 0.7252333332703651,
+        "bias_db": -0.7252333332703651,
+        "max_abs_error_db": 1.264773566083047
+      },
+      "calibration_corrected_in_sample": {
+        "n": 9,
+        "rmse_db": 0.81217747948662,
+        "mae_db": 0.7252333332703651,
+        "bias_db": -0.7252333332703651,
+        "max_abs_error_db": 1.264773566083047
+      },
+      "calibration_corrected_leave_one_out": {
+        "n": 9,
+        "rmse_db": 0.81217747948662,
+        "mae_db": 0.7252333332703651,
+        "bias_db": -0.7252333332703651,
+        "max_abs_error_db": 1.264773566083047
+      },
+      "heldout_raw": {
+        "n": 9,
+        "rmse_db": 0.5265668527371006,
+        "mae_db": 0.45690476760748905,
+        "bias_db": -0.45690476760748905,
+        "max_abs_error_db": 0.9247646100091558
+      },
+      "heldout_corrected": {
+        "n": 9,
+        "rmse_db": 0.5265668527371006,
+        "mae_db": 0.45690476760748905,
+        "bias_db": -0.45690476760748905,
+        "max_abs_error_db": 0.9247646100091558
+      }
+    },
+    "constant": {
+      "coefficients": [
+        -0.725233333270365
+      ],
+      "calibration_raw": {
+        "n": 9,
+        "rmse_db": 0.81217747948662,
+        "mae_db": 0.7252333332703651,
+        "bias_db": -0.7252333332703651,
+        "max_abs_error_db": 1.264773566083047
+      },
+      "calibration_corrected_in_sample": {
+        "n": 9,
+        "rmse_db": 0.3656075361624737,
+        "mae_db": 0.29942410917346096,
+        "bias_db": -1.356939252319636e-16,
+        "max_abs_error_db": 0.6219961324906272
+      },
+      "calibration_corrected_leave_one_out": {
+        "n": 9,
+        "rmse_db": 0.4113084781827829,
+        "mae_db": 0.33685212282014354,
+        "bias_db": -1.8503717077085943e-16,
+        "max_abs_error_db": 0.6997456490519557
+      },
+      "heldout_raw": {
+        "n": 9,
+        "rmse_db": 0.5265668527371006,
+        "mae_db": 0.45690476760748905,
+        "bias_db": -0.45690476760748905,
+        "max_abs_error_db": 0.9247646100091558
+      },
+      "heldout_corrected": {
+        "n": 9,
+        "rmse_db": 0.3748478396492344,
+        "mae_db": 0.31266884938260725,
+        "bias_db": 0.26832856566287594,
+        "max_abs_error_db": 0.6513626721189759
+      }
+    },
+    "wavelength_linear": {
+      "coefficients": [
+        -0.776650749319961,
+        -0.03085067175459514
+      ],
+      "calibration_raw": {
+        "n": 9,
+        "rmse_db": 0.81217747948662,
+        "mae_db": 0.7252333332703651,
+        "bias_db": -0.7252333332703651,
+        "max_abs_error_db": 1.264773566083047
+      },
+      "calibration_corrected_in_sample": {
+        "n": 9,
+        "rmse_db": 0.1822222429577327,
+        "mae_db": 0.1631885230425911,
+        "bias_db": -1.9120507646322142e-16,
+        "max_abs_error_db": 0.292666736164375
+      },
+      "calibration_corrected_leave_one_out": {
+        "n": 9,
+        "rmse_db": 0.2398139896892537,
+        "mae_db": 0.21483987335415622,
+        "bias_db": 0.004911658561637222,
+        "max_abs_error_db": 0.37344416965460403
+      },
+      "heldout_raw": {
+        "n": 9,
+        "rmse_db": 0.5265668527371006,
+        "mae_db": 0.45690476760748905,
+        "bias_db": -0.45690476760748905,
+        "max_abs_error_db": 0.9247646100091558
+      },
+      "heldout_corrected": {
+        "n": 9,
+        "rmse_db": 0.26405242260171047,
+        "mae_db": 0.2148639336586295,
+        "bias_db": 0.2148434141895968,
+        "max_abs_error_db": 0.3881649376152079
+      }
+    },
+    "span_log_linear": {
+      "coefficients": [
+        -0.9573894249160754,
+        0.4627235059422783
+      ],
+      "calibration_raw": {
+        "n": 9,
+        "rmse_db": 0.81217747948662,
+        "mae_db": 0.7252333332703651,
+        "bias_db": -0.7252333332703651,
+        "max_abs_error_db": 1.264773566083047
+      },
+      "calibration_corrected_in_sample": {
+        "n": 9,
+        "rmse_db": 0.32169373323301786,
+        "mae_db": 0.2902013210986041,
+        "bias_db": -1.356939252319636e-16,
+        "max_abs_error_db": 0.4882028095943296
+      },
+      "calibration_corrected_leave_one_out": {
+        "n": 9,
+        "rmse_db": 0.4156347829290059,
+        "mae_db": 0.3759667248765983,
+        "bias_db": -0.0028109983884710608,
+        "max_abs_error_db": 0.5726060276659528
+      },
+      "heldout_raw": {
+        "n": 9,
+        "rmse_db": 0.5265668527371006,
+        "mae_db": 0.45690476760748905,
+        "bias_db": -0.45690476760748905,
+        "max_abs_error_db": 0.9247646100091558
+      },
+      "heldout_corrected": {
+        "n": 9,
+        "rmse_db": 0.3446155763514568,
+        "mae_db": 0.284655397228468,
+        "bias_db": 0.268328565662876,
+        "max_abs_error_db": 0.5418601282004323
+      }
+    },
+    "wavelength_span_linear": {
+      "coefficients": [
+        -1.0088068409656716,
+        -0.030850671754595244,
+        0.4627235059422787
+      ],
+      "calibration_raw": {
+        "n": 9,
+        "rmse_db": 0.81217747948662,
+        "mae_db": 0.7252333332703651,
+        "bias_db": -0.7252333332703651,
+        "max_abs_error_db": 1.264773566083047
+      },
+      "calibration_corrected_in_sample": {
+        "n": 9,
+        "rmse_db": 0.05498120889129758,
+        "mae_db": 0.04833201763274707,
+        "bias_db": -3.3615086023372794e-16,
+        "max_abs_error_db": 0.09280515773549003
+      },
+      "calibration_corrected_leave_one_out": {
+        "n": 9,
+        "rmse_db": 0.08027561472973464,
+        "mae_db": 0.07203282126158325,
+        "bias_db": 0.0025880209419809775,
+        "max_abs_error_db": 0.12227601952776346
+      },
+      "heldout_raw": {
+        "n": 9,
+        "rmse_db": 0.5265668527371006,
+        "mae_db": 0.45690476760748905,
+        "bias_db": -0.45690476760748905,
+        "max_abs_error_db": 0.9247646100091558
+      },
+      "heldout_corrected": {
+        "n": 9,
+        "rmse_db": 0.2190266523877419,
+        "mae_db": 0.21484341418959643,
+        "bias_db": 0.21484341418959643,
+        "max_abs_error_db": 0.2786623936966632
+      }
+    }
+  },
+  "safe_current_claim": "Use recursive raw held-out RMSE unless a correction model has acceptable calibration leave-one-out behavior and improves held-out performance without leakage."
+}
