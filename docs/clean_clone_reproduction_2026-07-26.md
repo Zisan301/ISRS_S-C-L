@@ -27,3 +27,14 @@ Post-reproduction git status: clean
 
 Generated diagnostic files are written to:
 releases/pnc-v1.0/generated
+
+## Reproduction hygiene retest
+
+After moving generated diagnostic outputs to releases/pnc-v1.0/generated, a second clean-clone retest was run.
+
+Result: PASS
+
+Post-reproduction git status: clean
+
+Generated diagnostic files are written to:
+releases/pnc-v1.0/generated
