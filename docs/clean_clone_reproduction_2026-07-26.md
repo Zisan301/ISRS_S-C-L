@@ -16,3 +16,14 @@ Headline reproduced metrics:
 - Leave-one-span-out calibration CV RMSE: 0.1304 dB
 
 Scope limitation: this remains C-band diagnostic evidence only, not full S+C+L external validation.
+
+## Reproduction hygiene retest
+
+After moving generated diagnostic outputs to releases/pnc-v1.0/generated, a second clean-clone retest was run.
+
+Result: PASS
+
+Post-reproduction git status: clean
+
+Generated diagnostic files are written to:
+releases/pnc-v1.0/generated
