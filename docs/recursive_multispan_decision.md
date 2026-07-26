@@ -20,3 +20,23 @@ The analytical multi-span scaling mode is not defensible as the publication-grad
 Important limitation:
 
 The successful smoke run proves pipeline plumbing only. It is not journal evidence. Full recursive-mode validation must now regenerate the held-out C-band comparison and later the wider S/C/L validation matrix.
+
+## Recursive held-out C-band diagnostic update
+
+A follow-up diagnostic compared the frozen C-band held-out evidence with current analytical and recursive evaluations.
+
+Key result:
+
+- Frozen corrected RMSE: 0.389 dB
+- Current recursive raw RMSE: 0.527 dB
+- Current recursive raw bias: -0.457 dB
+- Current recursive raw max absolute error: 0.925 dB
+- Current recursive corrected RMSE using the old correction: 3.038 dB
+
+Interpretation:
+
+The old wavelength-linear residual correction must not be reused after switching to recursive propagation. It was fitted for the older model path and now overcorrects the recursive model. The safer current claim is the raw recursive held-out C-band diagnostic result: 0.527 dB RMSE over 9 held-out rows.
+
+Decision:
+
+Retire the old 0.389 dB corrected held-out claim unless a new correction is trained only on calibration rows and then evaluated on held-out rows. For now, report recursive raw performance as diagnostic evidence and clearly state that full journal evidence still requires clean regeneration and wider S/C/L validation.
