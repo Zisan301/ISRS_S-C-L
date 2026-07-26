@@ -40,3 +40,38 @@ The old wavelength-linear residual correction must not be reused after switching
 Decision:
 
 Retire the old 0.389 dB corrected held-out claim unless a new correction is trained only on calibration rows and then evaluated on held-out rows. For now, report recursive raw performance as diagnostic evidence and clearly state that full journal evidence still requires clean regeneration and wider S/C/L validation.
+
+## Recursive C-band correction and grouped-CV update
+
+A recursive C-band residual-correction diagnostic was trained only on the calibration rows:
+
+- Calibration wavelengths: 1535, 1550, 1560 nm
+- Calibration spans: 1, 4, 8
+- Calibration rows: 9
+- Held-out rows: 9
+
+Candidate correction models were compared using calibration leave-one-out, leave-one-wavelength-out, and leave-one-span-out tests.
+
+Best diagnostic model:
+
+- Model: wavelength_span_linear
+- Form: residual = a + b*(wavelength_nm - 1550) + c*log10(spans)
+
+Grouped-CV results on calibration rows only:
+
+- Leave-one-wavelength-out RMSE: 0.172 dB
+- Leave-one-span-out RMSE: 0.130 dB
+
+Held-out C-band diagnostic result:
+
+- Recursive raw held-out RMSE: 0.527 dB
+- Recursive corrected held-out RMSE: 0.219 dB
+- Recursive corrected held-out max absolute error: 0.279 dB
+
+Decision:
+
+The old 0.389 dB corrected claim is retired. The new diagnostic C-band claim is that recursive span-by-span propagation gives 0.527 dB raw held-out RMSE, and a calibration-only wavelength/span residual correction reduces the held-out RMSE to 0.219 dB on the 9-row C-band held-out set.
+
+Limitation:
+
+This remains C-band diagnostic evidence only. It is not full S+C+L external validation and not final journal evidence until regenerated in a clean clone and expanded to wider validation cases.
