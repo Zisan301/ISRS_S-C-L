@@ -1,4 +1,4 @@
-﻿"""Compare frozen analytical held-out evidence against current recursive evaluation.
+"""Compare frozen analytical held-out evidence against current recursive evaluation.
 
 This script does not claim final journal validation. It checks whether the old
 C-band held-out GNPy comparison changes after switching the model path from
@@ -8,6 +8,7 @@ analytical multi-span scaling to recursive span-by-span propagation.
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -74,7 +75,7 @@ def correction_db(wavelength_nm: np.ndarray, intercept: float, slope: float, cen
 
 
 def main() -> int:
-    output_dir = ROOT / "releases" / "pnc-v1.0" / "results"
+    output_dir = Path(os.environ.get("PNC_RESULTS_DIR", ROOT / "releases" / "pnc-v1.0" / "results"))
     output_dir.mkdir(parents=True, exist_ok=True)
 
     heldout_path = ROOT / "releases" / "pnc-v1.0" / "validation_data" / "heldout_row_level_comparison.csv"

@@ -1,4 +1,4 @@
-﻿"""Run PNC recursive diagnostic reproduction suite.
+"""Run PNC recursive diagnostic reproduction suite.
 
 This is a release-level convenience runner. It regenerates the recursive
 diagnostic evidence files used by the PNC upgrade branch.
@@ -11,38 +11,39 @@ recursive diagnostic package.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-RESULTS = ROOT / "releases" / "pnc-v1.0" / "results"
+RESULTS = ROOT / "releases" / "pnc-v1.0" / "generated"
 
 COMMANDS = [
     {
         "name": "recursive_heldout_cband_comparison",
         "command": [sys.executable, "scripts/compare_recursive_heldout_cband.py"],
         "expected_outputs": [
-            "releases/pnc-v1.0/results/recursive_heldout_cband_row_comparison.csv",
-            "releases/pnc-v1.0/results/recursive_heldout_cband_metrics.json",
+            "releases/pnc-v1.0/generated/recursive_heldout_cband_row_comparison.csv",
+            "releases/pnc-v1.0/generated/recursive_heldout_cband_metrics.json",
         ],
     },
     {
         "name": "recursive_cband_correction",
         "command": [sys.executable, "scripts/train_recursive_cband_correction.py"],
         "expected_outputs": [
-            "releases/pnc-v1.0/results/recursive_cband_calibration_rows.csv",
-            "releases/pnc-v1.0/results/recursive_cband_heldout_raw_rows.csv",
-            "releases/pnc-v1.0/results/recursive_cband_heldout_corrected_candidates.csv",
-            "releases/pnc-v1.0/results/recursive_cband_correction_summary.json",
+            "releases/pnc-v1.0/generated/recursive_cband_calibration_rows.csv",
+            "releases/pnc-v1.0/generated/recursive_cband_heldout_raw_rows.csv",
+            "releases/pnc-v1.0/generated/recursive_cband_heldout_corrected_candidates.csv",
+            "releases/pnc-v1.0/generated/recursive_cband_correction_summary.json",
         ],
     },
     {
         "name": "recursive_cband_grouped_cv",
         "command": [sys.executable, "scripts/evaluate_recursive_cband_grouped_cv.py"],
         "expected_outputs": [
-            "releases/pnc-v1.0/results/recursive_cband_grouped_cv_summary.json",
+            "releases/pnc-v1.0/generated/recursive_cband_grouped_cv_summary.json",
         ],
     },
 ]
@@ -55,6 +56,9 @@ def run_command(item: dict) -> dict:
     print(" ".join(item["command"]))
     print("=" * 80)
 
+    env = os.environ.copy()
+    env["PNC_RESULTS_DIR"] = str(RESULTS)
+
     completed = subprocess.run(
         item["command"],
         cwd=ROOT,
@@ -62,6 +66,7 @@ def run_command(item: dict) -> dict:
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         check=False,
+        env=env,
     )
 
     print(completed.stdout)
@@ -103,12 +108,13 @@ def main() -> int:
     }
 
     if summary["passed"]:
-        correction = load_json("releases/pnc-v1.0/results/recursive_cband_correction_summary.json")
-        grouped = load_json("releases/pnc-v1.0/results/recursive_cband_grouped_cv_summary.json")
+        correction = load_json("releases/pnc-v1.0/generated/recursive_cband_correction_summary.json")
+        grouped = load_json("releases/pnc-v1.0/generated/recursive_cband_grouped_cv_summary.json")
 
         best = correction["best_model_by_calibration_leave_one_out_rmse"]
         summary["headline_metrics"] = {
             "best_correction_model_by_calibration_loo": best,
+            "generated_output_dir": str(RESULTS.relative_to(ROOT)),
             "recursive_raw_heldout_rmse_db": correction["model_summaries"]["none"]["heldout_raw"]["rmse_db"],
             "recursive_corrected_heldout_rmse_db": correction["model_summaries"][best]["heldout_corrected"]["rmse_db"],
             "recursive_corrected_heldout_max_abs_error_db": correction["model_summaries"][best]["heldout_corrected"]["max_abs_error_db"],

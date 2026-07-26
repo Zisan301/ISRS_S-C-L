@@ -1,4 +1,4 @@
-﻿"""Train recursive residual correction on calibration rows and test on held-out rows.
+"""Train recursive residual correction on calibration rows and test on held-out rows.
 
 This script uses:
 - calibration rows: preliminary_cband_external_validation_comparisons.csv
@@ -12,6 +12,7 @@ correction to held-out rows.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -141,7 +142,7 @@ def evaluate_rows(source: pd.DataFrame, link: LinkModel, launch: np.ndarray, ref
 
 def main() -> int:
     validation_dir = ROOT / "releases" / "pnc-v1.0" / "validation_data"
-    output_dir = ROOT / "releases" / "pnc-v1.0" / "results"
+    output_dir = Path(os.environ.get("PNC_RESULTS_DIR", ROOT / "releases" / "pnc-v1.0" / "results"))
     output_dir.mkdir(parents=True, exist_ok=True)
 
     calibration_path = validation_dir / "preliminary_cband_external_validation_comparisons.csv"
@@ -223,8 +224,8 @@ def main() -> int:
         "config": "config_q2_final.yaml",
         "grid_mode": cfg["grid"]["mode"],
         "n_channels": int(grid.n_channels),
-        "calibration_file": str(calibration_path),
-        "heldout_file": str(heldout_path),
+        "calibration_file": str(calibration_path.relative_to(ROOT)),
+        "heldout_file": str(heldout_path.relative_to(ROOT)),
         "calibration_rows": int(len(calibration)),
         "heldout_rows": int(len(heldout)),
         "candidate_models": models,
