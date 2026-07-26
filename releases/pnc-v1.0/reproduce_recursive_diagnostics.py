@@ -46,6 +46,14 @@ COMMANDS = [
             "releases/pnc-v1.0/generated/recursive_cband_grouped_cv_summary.json",
         ],
     },
+    {
+        "name": "scl_external_validation_claim_guard",
+        "command": [sys.executable, "scripts/check_scl_external_validation_matrix.py"],
+        "expected_outputs": [
+            "releases/pnc-v1.0/generated/scl_external_validation_readiness.json",
+        ],
+        "non_blocking": True,
+    },
 ]
 
 
@@ -80,7 +88,11 @@ def run_command(item: dict) -> dict:
         "name": item["name"],
         "command": item["command"],
         "returncode": completed.returncode,
-        "passed": completed.returncode == 0 and not missing_outputs,
+        "passed": (
+            (completed.returncode == 0 or item.get("non_blocking", False))
+            and not missing_outputs
+        ),
+        "non_blocking": bool(item.get("non_blocking", False)),
         "missing_outputs": missing_outputs,
         "stdout_tail": completed.stdout[-4000:],
     }
@@ -100,8 +112,8 @@ def main() -> int:
         "python": sys.version,
         "suite": "pnc_recursive_diagnostics",
         "note": (
-            "Diagnostic reproduction suite only. This is not full journal evidence "
-            "and not full S+C+L external validation."
+            "Diagnostic reproduction suite only. This is not full journal evidence. "
+            "The S/C/L external validation checker is included as a non-blocking claim guard."
         ),
         "runs": runs,
         "passed": all(item["passed"] for item in runs),
