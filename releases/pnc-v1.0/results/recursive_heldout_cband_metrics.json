@@ -1,0 +1,63 @@
+{
+  "note": "Diagnostic comparison only; this is not final journal evidence.",
+  "config": "config_q2_final.yaml",
+  "grid_mode": "paper_240_subset",
+  "n_channels": 240,
+  "residual_correction": {
+    "intercept_db": 2.5433,
+    "slope_db_per_nm": -0.008743,
+    "center_nm": 1550.0,
+    "warning": "Same old wavelength-linear post-model correction is applied for comparability only."
+  },
+  "frozen_raw": {
+    "n": 9,
+    "rmse_db": 2.8039104835925133,
+    "mae_db": 2.7840000000000007,
+    "bias_db": 2.7840000000000007,
+    "max_abs_error_db": 3.11
+  },
+  "frozen_corrected": {
+    "n": 9,
+    "rmse_db": 0.388895015824751,
+    "mae_db": 0.3777777777777777,
+    "bias_db": 0.21111111111111114,
+    "max_abs_error_db": 0.477
+  },
+  "current_analytical_raw": {
+    "n": 9,
+    "rmse_db": 0.8553051070237379,
+    "mae_db": 0.817482845387417,
+    "bias_db": -0.817482845387417,
+    "max_abs_error_db": 1.2780520909867725
+  },
+  "current_analytical_corrected": {
+    "n": 9,
+    "rmse_db": 3.3967968797054215,
+    "mae_db": 3.390511959720751,
+    "bias_db": -3.390511959720751,
+    "max_abs_error_db": 3.779403176986772
+  },
+  "current_recursive_raw": {
+    "n": 9,
+    "rmse_db": 0.5265668527371006,
+    "mae_db": 0.45690476760748905,
+    "bias_db": -0.45690476760748905,
+    "max_abs_error_db": 0.9247646100091558
+  },
+  "current_recursive_corrected": {
+    "n": 9,
+    "rmse_db": 3.037900391714913,
+    "mae_db": 3.029933881940823,
+    "bias_db": -3.029933881940823,
+    "max_abs_error_db": 3.4261156960091554
+  },
+  "recursive_vs_analytical": {
+    "n": 9,
+    "rmse_db": 0.451599948563641,
+    "mae_db": 0.36057807777992795,
+    "bias_db": 0.36057807777992795,
+    "max_abs_error_db": 0.6650728889878117
+  },
+  "max_abs_wavelength_error_nm": 0.17702840551078225,
+  "decision": "If recursive corrected error is materially worse than frozen corrected error, the manuscript numbers must be regenerated and the old 0.389 dB claim must not be reused."
+}
