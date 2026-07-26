@@ -34,3 +34,18 @@ Do not claim full S+C+L external validation until S-band, C-band and L-band held
 - validation_data/validation_metrics.json: manuscript-reported metrics.
 - validation_data/validation_gate.json: validation gate thresholds and pass/fail status.
 - MANIFEST.json: file hashes and environment metadata.
+
+## Recursive diagnostic reproduction
+
+Run from repository root:
+
+python releases\pnc-v1.0\reproduce_recursive_diagnostics.py
+
+Current diagnostic headline:
+
+- Recursive raw held-out C-band RMSE: 0.527 dB
+- Recursive calibration-only corrected held-out C-band RMSE: 0.219 dB
+- Leave-one-wavelength-out calibration CV RMSE: 0.172 dB
+- Leave-one-span-out calibration CV RMSE: 0.130 dB
+
+Scope limitation: this is C-band diagnostic evidence only, not full S+C+L external validation.
