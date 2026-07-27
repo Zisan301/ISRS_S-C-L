@@ -4,8 +4,8 @@ This folder contains the release manifest and clean-clone reproduction record fo
 
 **A reproducible recursive GSNR estimator for wideband optical links with power-aligned C-band GNPy verification**
 
-Authoritative tag: `joc-submission-v1.2`  
-Commit: `b321d334094b70257bb3c18dee1d3c09aee2c676`
+Authoritative tag: `joc-submission-v1.3`  
+Commit: `216cb1f84a6e3088173b1874eceeed1c7f328ee5`
 
 Main command:
 

@@ -1,9 +1,9 @@
 # Clean-clone reproduction log for JOC v1.3
 
 Paper title: A reproducible recursive GSNR estimator for wideband optical links with power-aligned C-band GNPy verification
-Release tag recorded by this checkout: `joc-submission-v1.2`
-Commit recorded by this checkout: `b321d334094b70257bb3c18dee1d3c09aee2c676`
-Generated at: 2026-07-27T19:26:07.788210+00:00
+Release tag recorded by this checkout: `joc-submission-v1.3`
+Commit recorded by this checkout: `216cb1f84a6e3088173b1874eceeed1c7f328ee5`
+Generated at: 2026-07-27T19:30:13.198552+00:00
 
 ## Command expected from a clean clone
 
