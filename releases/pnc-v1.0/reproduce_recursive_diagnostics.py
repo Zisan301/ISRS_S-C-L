@@ -63,6 +63,22 @@ COMMANDS = [
         ],
         "non_blocking": True,
     },
+    {
+        "name": "joc_paper_evidence_generation",
+        "command": [sys.executable, "scripts/generate_joc_paper_evidence.py"],
+        "expected_outputs": [
+            "releases/pnc-v1.0/generated/joc_paper_evidence_summary.json",
+            "releases/pnc-v1.0/generated/joc_figures/fig1_recursive_vs_analytical.pdf",
+            "releases/pnc-v1.0/generated/joc_figures/fig2_gnpy_vs_recursive_cband.pdf",
+            "releases/pnc-v1.0/generated/joc_figures/fig3_validation_rmse_summary.pdf",
+            "releases/pnc-v1.0/generated/joc_figures/fig4_grouped_cv_rmse.pdf",
+            "releases/pnc-v1.0/generated/joc_figures/fig5_cband_launch_power_sweep.pdf",
+            "releases/pnc-v1.0/generated/joc_figures/fig6_validation_readiness_by_band.pdf",
+            "releases/pnc-v1.0/generated/joc_tables/table1_validation_summary.csv",
+            "releases/pnc-v1.0/generated/joc_tables/table2_launch_power_sweep_summary.csv",
+            "releases/pnc-v1.0/generated/joc_tables/table3_validation_readiness.csv",
+        ],
+    },
 ]
 
 
