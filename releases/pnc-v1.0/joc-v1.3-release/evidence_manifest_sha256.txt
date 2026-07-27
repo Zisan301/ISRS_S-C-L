@@ -1,6 +1,6 @@
 Paper title: A reproducible recursive GSNR estimator for wideband optical links with power-aligned C-band GNPy verification
-Release tag: joc-submission-v1.3
-Commit: 95aba239d71f60c587ab42cd2709462d87764d2f
+Release tag: joc-submission-v1.3.1
+Commit: eb2e9459c14249f4b0d6075b2f4a2eb0e5f87526
 
 SHA256 evidence manifest
 ------------------------
@@ -11,20 +11,19 @@ ac5a5bedacca8fac92705ef6b22e957e862eb9f4dbcdd8023a9b749fbb45ceff  scripts/genera
 1c37275407a2c14daf3658749c470b262913f678b82dbdb9af7354fe8b6278e6  releases/pnc-v1.0/reproduce_joc_revision.py
 9d33b63b8bc096825a89120370e48ce1d7557830e59918d5f8fa8f4115e6f5e9  releases/pnc-v1.0/generated/cband_launch_power_sweep_reference_rows.csv
 b0f4f3a12f5f2f24974c9932ba43e94ecac658d4f388354f7afdc918ee9797cd  releases/pnc-v1.0/generated/cband_launch_power_sweep_model_comparison.csv
-1be134e37db00ea2e18a3e965db560e2ea17c8e6d5921555f5d155e86eaeec36  releases/pnc-v1.0/generated/cband_launch_power_sweep_summary.json
+8fb97ab1ed1494d74167f7dedc6b80e1bcb7a296c4589827814a381b4f0272a9  releases/pnc-v1.0/generated/cband_launch_power_sweep_summary.json
 195a7a02f1eebf49809b1e60673d498f803085f41234fb994496089189dd1fc6  releases/pnc-v1.0/generated/joc_bias_audit_rows.csv
 434d11b4562d033dc415387b9282c4303c6676ba889ec1b298b43bea8c5dc213  releases/pnc-v1.0/generated/joc_bias_audit_summary.json
 59fc5c342da6cfa253ffa20c95da25271cf9b4bcbe4d1c29cac7f60a89654674  releases/pnc-v1.0/generated/scl_external_validation_readiness.json
-9391b67eaf1ff6d0cbf40c5073bfd51aa90d1c3cbc3b93a43b796de45f073705  releases/pnc-v1.0/generated/joc_revision_reproduction_suite.json
 4fe7fe0ff71bca26144e01b6a813a728114dd50c63350a1a430da9b331c0a338  releases/pnc-v1.0/generated/joc_revision_assets/generated/joc_revision_numbers.tex
-dc2358a66056fa9ae4b8a9fcec7c29d913cc51cbac5e82ab7925812d323bccc2  releases/pnc-v1.0/generated/joc_revision_assets/generated/release_metadata.tex
+dca4eced620fe994120b970c4cc1911e50543ceb5278519862f1d208aa9d2180  releases/pnc-v1.0/generated/joc_revision_assets/generated/release_metadata.tex
 b6ce51af1c0431cf4428f504a746cba75583bf54153c9ea26f904d52a3fab67f  releases/pnc-v1.0/generated/joc_revision_assets/generated/table_condition_rmse.tex
 d627c74342c7e56ef1dba0ff264f817c923f9ae274ca5602fe1b89ac755bc129  releases/pnc-v1.0/generated/joc_revision_assets/generated/table_bias_audit_summary.tex
 57e508b05982b9c3f8551eafb61fd7263aa7e383a2b2520d6c367094b4ce072d  releases/pnc-v1.0/generated/joc_revision_assets/generated/table_bias_audit_center_channels.tex
 7b9efefc4c8bc4568cb5e03b479bc907540edac363726af8380d853c88917a5a  releases/pnc-v1.0/generated/joc_revision_assets/generated/table_figure_provenance.tex
 00af2de96215f9fab1269905c0fb07d9eeb85b73929722fef5201008e4faea4d  releases/pnc-v1.0/generated/joc_revision_assets/generated/figure_provenance.csv
-7e846aea3d6ed708c0f016029e532adc6d3e8c8747092d8f1ec61c1fb3d30c3f  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-1-spectral-scope.pdf
-b48005d2485f0fc78c79f190e4d3fb8d365373918294ce6c7075eadc156e7d90  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-2-framework-architecture.pdf
-d7f5c9c4068f47699fc1290e5be0cb37fbe903479bdd7cea7c8e673ca3195b53  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-3-power-aligned-parity.pdf
-7fb3cbba21ad7d10439813f2f0cdd97344045b9eddfc3b10410491a0c680f6d4  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-4-condition-level-robustness.pdf
-2ef1a0d8f298c3533552d77f7a20bd5e0f432501b574cf45b3f43193f0d55b6e  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-5-legacy-heldout-rmse.pdf
+ac566b383989e7788aaa74792cc66633ff0030e459579acc291583d05ba9dad6  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-1-spectral-scope.pdf
+c2f8eb76d7b3c3a133e534f6cef931f97ee60c774b4b9383689d961a94cb40ad  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-2-framework-architecture.pdf
+41e6d49cdfe172a6daf67cc91ddd2ee012b76c85012a192265ba8bfa320c97da  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-3-power-aligned-parity.pdf
+307b8835e2646a52ee7f0509fa10146e06bb05b4b03a425973ce8bbaa2d595ce  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-4-condition-level-robustness.pdf
+fd047cc848391fd13ae1ec2ad7d3321558dc111692617e7a6ea510155f41f198  releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-5-legacy-heldout-rmse.pdf

@@ -1,8 +1,8 @@
 {
-  "generated_at_utc": "2026-07-27T19:35:52.951432+00:00",
+  "generated_at_utc": "2026-07-27T20:05:34.275713+00:00",
   "paper_title": "A reproducible recursive GSNR estimator for wideband optical links with power-aligned C-band GNPy verification",
-  "release_tag": "joc-submission-v1.3",
-  "commit": "95aba239d71f60c587ab42cd2709462d87764d2f",
+  "release_tag": "joc-submission-v1.3.1",
+  "commit": "eb2e9459c14249f4b0d6075b2f4a2eb0e5f87526",
   "headline_expected_output": {
     "matched_rows": 567,
     "matched_operating_conditions": 9,
@@ -50,7 +50,7 @@
     {
       "path": "releases/pnc-v1.0/generated/cband_launch_power_sweep_summary.json",
       "bytes": 10107,
-      "sha256": "1be134e37db00ea2e18a3e965db560e2ea17c8e6d5921555f5d155e86eaeec36"
+      "sha256": "8fb97ab1ed1494d74167f7dedc6b80e1bcb7a296c4589827814a381b4f0272a9"
     },
     {
       "path": "releases/pnc-v1.0/generated/joc_bias_audit_rows.csv",
@@ -68,19 +68,14 @@
       "sha256": "59fc5c342da6cfa253ffa20c95da25271cf9b4bcbe4d1c29cac7f60a89654674"
     },
     {
-      "path": "releases/pnc-v1.0/generated/joc_revision_reproduction_suite.json",
-      "bytes": 25241,
-      "sha256": "9391b67eaf1ff6d0cbf40c5073bfd51aa90d1c3cbc3b93a43b796de45f073705"
-    },
-    {
       "path": "releases/pnc-v1.0/generated/joc_revision_assets/generated/joc_revision_numbers.tex",
       "bytes": 751,
       "sha256": "4fe7fe0ff71bca26144e01b6a813a728114dd50c63350a1a430da9b331c0a338"
     },
     {
       "path": "releases/pnc-v1.0/generated/joc_revision_assets/generated/release_metadata.tex",
-      "bytes": 318,
-      "sha256": "dc2358a66056fa9ae4b8a9fcec7c29d913cc51cbac5e82ab7925812d323bccc2"
+      "bytes": 320,
+      "sha256": "dca4eced620fe994120b970c4cc1911e50543ceb5278519862f1d208aa9d2180"
     },
     {
       "path": "releases/pnc-v1.0/generated/joc_revision_assets/generated/table_condition_rmse.tex",
@@ -110,27 +105,27 @@
     {
       "path": "releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-1-spectral-scope.pdf",
       "bytes": 30169,
-      "sha256": "7e846aea3d6ed708c0f016029e532adc6d3e8c8747092d8f1ec61c1fb3d30c3f"
+      "sha256": "ac566b383989e7788aaa74792cc66633ff0030e459579acc291583d05ba9dad6"
     },
     {
       "path": "releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-2-framework-architecture.pdf",
       "bytes": 29620,
-      "sha256": "b48005d2485f0fc78c79f190e4d3fb8d365373918294ce6c7075eadc156e7d90"
+      "sha256": "c2f8eb76d7b3c3a133e534f6cef931f97ee60c774b4b9383689d961a94cb40ad"
     },
     {
       "path": "releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-3-power-aligned-parity.pdf",
       "bytes": 31797,
-      "sha256": "d7f5c9c4068f47699fc1290e5be0cb37fbe903479bdd7cea7c8e673ca3195b53"
+      "sha256": "41e6d49cdfe172a6daf67cc91ddd2ee012b76c85012a192265ba8bfa320c97da"
     },
     {
       "path": "releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-4-condition-level-robustness.pdf",
       "bytes": 30432,
-      "sha256": "7fb3cbba21ad7d10439813f2f0cdd97344045b9eddfc3b10410491a0c680f6d4"
+      "sha256": "307b8835e2646a52ee7f0509fa10146e06bb05b4b03a425973ce8bbaa2d595ce"
     },
     {
       "path": "releases/pnc-v1.0/generated/joc_revision_assets/figures/figure-5-legacy-heldout-rmse.pdf",
       "bytes": 40439,
-      "sha256": "2ef1a0d8f298c3533552d77f7a20bd5e0f432501b574cf45b3f43193f0d55b6e"
+      "sha256": "fd047cc848391fd13ae1ec2ad7d3321558dc111692617e7a6ea510155f41f198"
     }
   ]
 }
