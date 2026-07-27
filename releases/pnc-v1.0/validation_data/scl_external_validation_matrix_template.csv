@@ -1,0 +1,4 @@
+﻿source_id,validation_split,source_type,tool_version,configuration_hash,date,provenance_reference,independent,band,wavelength_nm,spans,span_length_km,channel_power_dbm,metric,metric_unit,reference_value,reference_uncertainty,model_value,matched_wavelength_nm,wavelength_error_nm,matched,residual,notes
+example_s_1,heldout,gnpy_or_ssfm,TO_FILL,TO_FILL,TO_FILL,TO_FILL,true,S,TO_FILL,1,TO_FILL,TO_FILL,gsnr_db,dB,TO_FILL,TO_FILL,TO_FILL,TO_FILL,TO_FILL,false,TO_FILL,template row only - replace with real reference data
+example_c_1,heldout,gnpy_or_ssfm,TO_FILL,TO_FILL,TO_FILL,TO_FILL,true,C,TO_FILL,1,TO_FILL,TO_FILL,gsnr_db,dB,TO_FILL,TO_FILL,TO_FILL,TO_FILL,TO_FILL,false,TO_FILL,template row only - replace with real reference data
+example_l_1,heldout,gnpy_or_ssfm,TO_FILL,TO_FILL,TO_FILL,TO_FILL,true,L,TO_FILL,1,TO_FILL,TO_FILL,gsnr_db,dB,TO_FILL,TO_FILL,TO_FILL,TO_FILL,TO_FILL,false,TO_FILL,template row only - replace with real reference data

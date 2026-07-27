@@ -142,7 +142,10 @@ def _strategy_sweeps(link: LinkModel, profiles: Mapping[str, np.ndarray], cfg: M
     symbol_rate = float(cfg["modulation"]["symbol_rate_gbaud"]) * 1e9
     bits, overhead, threshold = int(cfg["modulation"]["bits_per_symbol_per_pol"]), float(cfg["fec"]["overhead_fraction"]), float(cfg["fec"]["ngmi_target"])
     for strategy, profile in profiles.items():
-        for result in link.sweep_spans(dbm_to_w(profile)):
+        evaluator = getattr(link, "evaluate_recursive", link.evaluate)
+        launch_w = dbm_to_w(profile)
+        for n_spans in range(1, int(cfg["fiber"]["max_spans"]) + 1):
+            result = evaluator(launch_w, n_spans)
             frame = result.to_frame(link.grid); frame.insert(0, "strategy", strategy); frame.insert(1, "spans", result.n_spans); channel_tables.append(frame)
             capacity = summarize_capacity(result.gmi, result.ngmi, threshold, symbol_rate, bits, overhead)
             summaries.append({
@@ -280,7 +283,8 @@ def _waveform_operating_points(link: LinkModel, result: Any, cfg: Mapping[str, A
 
 def run_waveform_validation(link: LinkModel, profile_dbm: np.ndarray, cfg: Mapping[str, Any], output_dir: Path, figure_dir: Path, dpi: int, calibration: MonotoneReceiverCalibration) -> pd.DataFrame:
     target_spans = int(cfg["optimization"]["target_spans"])
-    power = link.evaluate(dbm_to_w(profile_dbm), target_spans)
+    evaluator = getattr(link, "evaluate_recursive", link.evaluate)
+    power = evaluator(dbm_to_w(profile_dbm), target_spans)
     symbol_rate = float(cfg["modulation"]["symbol_rate_gbaud"]) * 1e9
     rows = []
     for point_index, (operating_point, channel_index) in enumerate(_waveform_operating_points(link, power, cfg)):

@@ -1,0 +1,91 @@
+{
+  "release": "pnc-v1.0",
+  "generated_at_utc": "2026-07-25T18:05:11.822347+00:00",
+  "git_commit_sha": "c8d2a4d0797c3e6b39a6f9cb8d150f3915027453",
+  "git_branch": "pnc-submission-upgrade",
+  "python_version": "3.12.7 (tags/v3.12.7:0b05ead, Oct  1 2024, 03:06:41) [MSC v.1941 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.22000-SP0",
+  "pip_freeze": "absl-py==2.2.2\nanyio==4.9.0\nargon2-cffi==23.1.0\nargon2-cffi-bindings==21.2.0\narrow==1.3.0\nasttokens==3.0.0\nastunparse==1.6.3\nasync-lru==2.0.5\nattrs==25.3.0\naudioread==3.0.1\nbabel==2.17.0\nbeautifulsoup4==4.13.4\nbleach==6.2.0\ncertifi==2025.4.26\ncffi==1.17.1\ncharset-normalizer==3.4.1\ncolorama==0.4.6\ncomm==0.2.2\ncommpy==0.1.2\ncontourpy==1.3.2\ncoverage==7.15.2\ncrepe==0.0.16\ncrypto==1.4.1\ncycler==0.12.1\ndeap==1.4.4\ndebugpy==1.8.14\ndecorator==5.2.1\ndefusedxml==0.7.1\net_xmlfile==2.0.0\nexecuting==2.2.0\nfastjsonschema==2.21.1\nfilelock==3.29.7\nflatbuffers==25.2.10\nfonttools==4.57.0\nfqdn==1.5.1\nfsspec==2026.6.0\ngast==0.6.0\ngnpy==2.14.1\ngoogle-pasta==0.2.0\ngrpcio==1.71.0\nh11==0.16.0\nh5py==3.13.0\nhmmlearn==0.3.3\nhttpcore==1.0.9\nhttpx==0.28.1\nidna==3.10\nimageio==2.37.0\niniconfig==2.3.0\nipykernel==6.29.5\nipython==9.2.0\nipython_pygments_lexers==1.1.1\nipywidgets==8.1.7\nisoduration==20.11.0\n# Editable install with no version control (isrs-scl-q2==1.0.0)\n-e e:\\vs code\\isrs_scl_q2_publication_project\njedi==0.19.2\nJinja2==3.1.6\njoblib==1.4.2\njson5==0.12.0\njsonpointer==3.0.0\njsonschema==4.23.0\njsonschema-specifications==2025.4.1\njupyter==1.1.1\njupyter-console==6.6.3\njupyter-events==0.12.0\njupyter-lsp==2.2.5\njupyter_client==8.6.3\njupyter_core==5.7.2\njupyter_server==2.15.0\njupyter_server_terminals==0.5.3\njupyterlab==4.4.2\njupyterlab_pygments==0.3.0\njupyterlab_server==2.27.3\njupyterlab_widgets==3.0.15\nkeras==3.9.2\nkiwisolver==1.4.8\nlazy_loader==0.4\nlibclang==18.1.1\nlibrosa==0.11.0\nllvmlite==0.44.0\nMarkdown==3.8\nmarkdown-it-py==3.0.0\nMarkupSafe==3.0.2\nmatplotlib==3.10.1\nmatplotlib-inline==0.1.7\nmdurl==0.1.2\nmistune==3.1.3\nml_dtypes==0.5.1\nmoocore==0.3.2\nmpmath==1.3.0\nmsgpack==1.1.0\nNaked==0.1.32\nnamex==0.0.9\nnbclient==0.10.2\nnbconvert==7.16.6\nnbformat==5.10.4\nnest-asyncio==1.6.0\nnetworkx==3.6.1\nnotebook==7.4.2\nnotebook_shim==0.2.4\nnumba==0.61.2\nnumpy==1.26.4\noopt-gnpy-libyang==0.0.14\nopencv-python==4.12.0.88\nopenpyxl==3.1.5\nopt_einsum==3.4.0\noptree==0.15.0\noverrides==7.7.0\npackaging==25.0\npandas==2.3.3\npandocfilters==1.5.1\nparso==0.8.4\npbr==6.1.1\npillow==11.2.1\nplatformdirs==4.3.7\npluggy==1.6.0\npooch==1.8.2\nprometheus_client==0.21.1\nprompt_toolkit==3.0.51\nprotobuf==5.29.4\npsutil==7.0.0\npure_eval==0.2.3\nPyAudio==0.2.14\npycparser==2.22\npycryptodome==3.23.0\npyDes==2.0.1\nPygments==2.19.1\npyparsing==3.2.3\npytest==8.4.2\npytest-cov==6.3.0\npython-dateutil==2.9.0.post0\npython-json-logger==3.3.0\npython_speech_features==0.6\npytz==2026.2\npywin32==310\npywinpty==2.0.15\nPyYAML==6.0.2\npyzmq==26.4.0\nreferencing==0.36.2\nrequests==2.32.3\nresampy==0.4.3\nrfc3339-validator==0.1.4\nrfc3986-validator==0.1.1\nrich==14.0.0\nrpds-py==0.24.0\nruff==0.15.22\nscikit-commpy==0.8.0\nscikit-dsp-comm==2.1.1\nscikit-learn==1.6.1\nscipy==1.15.2\nSend2Trash==1.8.3\nsetuptools==80.3.1\nshellescape==3.8.1\nsix==1.17.0\nsniffio==1.3.1\nsoundfile==0.13.1\nsoupsieve==2.7\nsoxr==0.5.0.post1\nSpeechRecognition==3.14.2\nsrt==3.5.3\nstack-data==0.6.3\nsympy==1.14.0\ntabulate==0.10.0\ntensorboard==2.19.0\ntensorboard-data-server==0.7.2\ntensorflow==2.19.0\ntermcolor==3.1.0\nterminado==0.18.1\nthreadpoolctl==3.6.0\ntinycss2==1.4.0\ntorch==2.13.0\ntorchaudio==2.11.0\ntorchvision==0.28.0\ntornado==6.4.2\ntqdm==4.67.1\ntraitlets==5.14.3\ntypes-python-dateutil==2.9.0.20241206\ntyping_extensions==4.13.2\ntzdata==2026.2\nuri-template==1.3.0\nurllib3==2.4.0\nvosk==0.3.45\nwcwidth==0.2.13\nwebcolors==24.11.1\nwebencodings==0.5.1\nwebsocket-client==1.8.0\nwebsockets==15.0.1\nWerkzeug==3.1.3\nwheel==0.45.1\nwidgetsnbextension==4.0.14\nwrapt==1.17.2\nxarray==2026.7.0\nxlrd==2.0.2",
+  "files": [
+    {
+      "path": "gnpy/topology_1span.json",
+      "size_bytes": 1583,
+      "sha256": "e3b3f5bb943698afc28e495d48adc6d08976ac57d2deceba9e6e4f9f5417398e"
+    },
+    {
+      "path": "gnpy/topology_4span.json",
+      "size_bytes": 4385,
+      "sha256": "77fa40d0230b87da57faf6f6b34853883a0be9e949ed2617f418b08181405b3c"
+    },
+    {
+      "path": "gnpy/topology_8span.json",
+      "size_bytes": 8121,
+      "sha256": "49fe4901b314ba2444b48ebd102ba8c8ea6cee3814de55394f3c227264942618"
+    },
+    {
+      "path": "make_manifest.py",
+      "size_bytes": 1456,
+      "sha256": "25b21093ff9c079547f0ea1f4757b7da26282e01867bd3a4f7446e929caa1d3f"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 1549,
+      "sha256": "b7c288f71328b41f6ee583059c92e2c7ba1eab17a3dd2d3f58b5c0b311acfdbe"
+    },
+    {
+      "path": "reproduce_paper.py",
+      "size_bytes": 4499,
+      "sha256": "85aee32d87a3e21e94bbb4d2dce4d01418471525e2c04c97dd3af502723cefa4"
+    },
+    {
+      "path": "results/generated_table3_validation_gate.csv",
+      "size_bytes": 226,
+      "sha256": "253d0e38d2973c247625d0a6f2240962a5858c2d02be69c597eea70ceca0c2ab"
+    },
+    {
+      "path": "results/generated_table4_heldout_rows.csv",
+      "size_bytes": 513,
+      "sha256": "5a69894ee37e3e77b83f50973aafe27c380796985eb29ba4e7ee2f278123fff5"
+    },
+    {
+      "path": "results/generated_validation_reproduction.json",
+      "size_bytes": 1750,
+      "sha256": "163e95b043883274b74f6df0d1dfc86f2e526e56d12f69eb1ba2c51e802e0db6"
+    },
+    {
+      "path": "validation_data/heldout_row_level_comparison.csv",
+      "size_bytes": 507,
+      "sha256": "1fdbb6d258b78fa670e064b847995f5fd422d1ae53581803f4f0676e45f69837"
+    },
+    {
+      "path": "validation_data/preliminary_cband_external_validation_comparisons.csv",
+      "size_bytes": 5573,
+      "sha256": "30a21141a71768e992de059ac4821c3e05f8b3c44eb10c42709f89d9ad034c39"
+    },
+    {
+      "path": "validation_data/preliminary_cband_external_validation_requirements.csv",
+      "size_bytes": 350,
+      "sha256": "073df1e50e2d636f790605029d1aa83bc4b8ffe4915d7e7b77d7c155ff8cc4f4"
+    },
+    {
+      "path": "validation_data/preliminary_cband_external_validation_summary.csv",
+      "size_bytes": 3002,
+      "sha256": "7713a31f5d4ee33b00c196c4720a7a0c11056f0b8c34784b4d3ae5ce254fe39b"
+    },
+    {
+      "path": "validation_data/preliminary_external_only_model_channel_sweep.csv",
+      "size_bytes": 1721745,
+      "sha256": "5f71c2e1d8d55c6abb2607d6dcce1553c63b2ed288d0faee464d7b04dd6dcbd7"
+    },
+    {
+      "path": "validation_data/validation_gate.json",
+      "size_bytes": 495,
+      "sha256": "5a07d2f0b8cbb75636cd0d3f120e883c83ca5df8c07219058e6ce53e3b4f51a2"
+    },
+    {
+      "path": "validation_data/validation_metrics.json",
+      "size_bytes": 1036,
+      "sha256": "b5050e92459c755880b2a2551b07d6bddd415c7920a3f201538f5d53c2bd280e"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+﻿from pathlib import Path
+
+path = Path("src/isrs_scl/link.py")
+text = path.read_text(encoding="utf-8")
+
+if "def evaluate_recursive" in text:
+    raise SystemExit("evaluate_recursive already exists; no patch applied.")
+
+marker = "\n    def sweep_spans(self, launch_power_w: np.ndarray, max_spans: int | None = None, nli_model: str | None = None) -> list[LinkResult]:"
+
+insert = r'''
+    def evaluate_recursive(self, launch_power_w: np.ndarray, n_spans: int, nli_model: str | None = None) -> LinkResult:
+        """Evaluate a link by explicitly propagating span by span.
+
+        This mode re-evaluates Raman power evolution, amplifier equalisation, ASE
+        and NLI after each span. It is slower than analytical scaling, but it is
+        more defensible for publication evidence when wavelength-dependent gain
+        limits, residual amplifier ripple, or span-to-span profile changes matter.
+        """
+        if n_spans < 1:
+            raise ValueError("n_spans must be positive")
+
+        launch = np.asarray(launch_power_w, dtype=float)
+        if launch.shape != self.grid.frequencies_hz.shape or np.any(launch <= 0) or not np.isfinite(launch).all():
+            raise ValueError("Launch powers must be finite, positive, and match the grid")
+
+        signal = launch.copy()
+        accumulated_ase_psd = np.zeros_like(signal)
+        accumulated_nli = np.zeros_like(signal)
+        final_span: SpanResult | None = None
+        optical_bw = float(self.span_model.amplifier.noise_bandwidth_hz)
+        receiver_bw = float(getattr(self.span_model.amplifier, "receiver_equivalent_noise_bandwidth_hz", optical_bw))
+
+        for _span_index in range(n_spans):
+            span = self.span_model.evaluate(signal, nli_model)
+            amp = span.amplifier
+            optical_bw = float(getattr(amp, "optical_noise_bandwidth_hz", self.span_model.amplifier.noise_bandwidth_hz))
+            receiver_bw = float(getattr(amp, "receiver_equivalent_noise_bandwidth_hz", optical_bw))
+
+            accumulated_ase_psd += span.total_ase_psd_w_per_hz
+            accumulated_nli += span.nli.nli_power_w_per_span
+
+            signal = np.asarray(amp.output_signal_w, dtype=float)
+            if signal.shape != launch.shape or np.any(signal <= 0) or not np.isfinite(signal).all():
+                raise FloatingPointError("Recursive propagation produced invalid span output powers")
+
+            final_span = span
+
+        if final_span is None:
+            raise RuntimeError("Recursive propagation did not evaluate any span")
+
+        ase_psd = accumulated_ase_psd
+        ase_optical = ase_psd * optical_bw
+        ase_receiver = ase_psd * receiver_bw
+        ase_01nm = ase_psd * reference_bandwidth_01nm_hz(self.grid.wavelengths_nm)
+
+        trx_snr = 10.0 ** (float(self.cfg["nli"]["transceiver_snr_db"]) / 10.0)
+        trx_noise = signal / trx_snr
+        total = ase_receiver + accumulated_nli + trx_noise
+
+        if np.any(total <= 0) or not np.isfinite(total).all():
+            raise FloatingPointError("Non-positive or non-finite recursively accumulated noise")
+
+        gsnr = signal / total
+        gsnr_db = 10.0 * np.log10(gsnr)
+
+        calibrated_snr = calibrated_ngmi = None
+        basis = "recursive_physical_gsnr_awgn"
+        metric_snr_db = gsnr_db
+
+        if self.receiver_calibration is not None:
+            minimum = float(self.receiver_calibration.minimum_input_snr_db)
+            maximum = float(self.receiver_calibration.maximum_input_snr_db)
+            if np.any(gsnr_db < minimum) or np.any(gsnr_db > maximum):
+                raise ValueError(f"Receiver calibration extrapolation requested outside {minimum:g}..{maximum:g} dB")
+            calibrated_snr = np.asarray(self.receiver_calibration.predict_snr_db(gsnr_db), dtype=float)
+            calibrated_ngmi = np.asarray(self.receiver_calibration.predict_ngmi(gsnr_db), dtype=float)
+            metric_snr_db = calibrated_snr
+            basis = "recursive_calibrated_receiver"
+
+        metric_snr = 10.0 ** (metric_snr_db / 10.0)
+        ber = analytical_ber_16qam(metric_snr)
+        evm = normalized_evm_from_snr(metric_snr)
+        q_db = q_factor_db_from_ber(ber)
+        gmi = gmi_16qam_awgn_from_snr_db(metric_snr_db)
+        bits = float(self.cfg["modulation"]["bits_per_symbol_per_pol"])
+        ngmi = calibrated_ngmi if calibrated_ngmi is not None else gmi / bits
+        symbol_rate = float(self.cfg["modulation"]["symbol_rate_gbaud"]) * 1e9
+        air_channel = gmi * symbol_rate * 2.0
+
+        budget = NoiseBudget(
+            ase_psd,
+            ase_optical,
+            ase_receiver,
+            ase_01nm,
+            accumulated_nli,
+            trx_noise,
+            total,
+            optical_bw,
+            receiver_bw,
+        )
+
+        return LinkResult(
+            int(n_spans),
+            int(n_spans) * float(self.cfg["fiber"]["span_length_km"]),
+            signal,
+            ase_optical,
+            ase_01nm,
+            accumulated_nli,
+            trx_noise,
+            total,
+            gsnr,
+            gsnr_db,
+            10.0 * np.log10(signal / np.maximum(ase_01nm, 1e-30)),
+            ber,
+            evm,
+            q_db,
+            gmi,
+            ngmi,
+            air_channel,
+            achievable_information_rate_bps(gmi, symbol_rate, polarizations=2, maximum_bits_per_symbol_per_pol=bits),
+            final_span,
+            budget,
+            calibrated_snr,
+            calibrated_ngmi,
+            basis,
+        )
+
+'''
+
+if marker not in text:
+    raise SystemExit("Could not find sweep_spans marker; patch not applied.")
+
+text = text.replace(marker, "\n" + insert + marker, 1)
+path.write_text(text, encoding="utf-8")
+print("Patched src/isrs_scl/link.py with evaluate_recursive().")

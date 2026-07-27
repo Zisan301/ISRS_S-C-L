@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Strict GNPy parser that refuses to duplicate one GNPy channel for multiple target wavelengths.
+r"""Strict GNPy parser that refuses to duplicate one GNPy channel for multiple target wavelengths.
 
 Use this instead of the earlier loose parser when building publication evidence.
 
@@ -42,8 +42,27 @@ def sha256(path: Path) -> str:
             h.update(chunk)
     return h.hexdigest()
 
+def read_gnpy_text(path: Path) -> str:
+    data = path.read_bytes()
+
+    encodings = ["utf-8-sig", "utf-16", "utf-16-le", "cp1252"]
+    for encoding in encodings:
+        try:
+            text = data.decode(encoding)
+            if "The GSNR per channel" in text or "Channel frequency" in text:
+                return text
+        except UnicodeDecodeError:
+            continue
+
+    text = data.decode("utf-8", errors="replace")
+    if "\x00" in text:
+        text = text.replace("\x00", "")
+    return text
+
+
 def parse_rows(path: Path):
-    clean = re.sub(r"\x1b\[[0-9;]*m", "", path.read_text(errors="replace"))
+    clean = re.sub(r"\x1b\[[0-9;]*m", "", read_gnpy_text(path))
+    clean = clean.replace("\x00", "")
     rows = []
     for line in clean.splitlines():
         m = re.match(r"\s*(\d+)\s+([0-9.]+)\s+(-?[0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\s*$", line)

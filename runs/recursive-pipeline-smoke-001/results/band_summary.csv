@@ -1,0 +1,7 @@
+strategy,spans,distance_km,band,channels,minimum_gsnr_db,mean_gsnr_db,minimum_ngmi,mean_ngmi,working_fraction,metric_basis
+flat,1,80.0,C,41,28.623949916242537,28.81747479457167,1.0,1.0,1.0,recursive_calibrated_receiver
+flat,2,160.0,C,41,26.14508493087905,26.365678701066038,1.0,1.0,1.0,recursive_calibrated_receiver
+fixed,1,80.0,C,41,26.289992118599187,28.638342662853603,1.0,1.0,1.0,recursive_calibrated_receiver
+fixed,2,160.0,C,41,23.582239314051307,26.2000263129968,0.9998688921425757,0.9999874762742463,1.0,recursive_calibrated_receiver
+adaptive,1,80.0,C,41,26.289992118599187,28.638342662853603,1.0,1.0,1.0,recursive_calibrated_receiver
+adaptive,2,160.0,C,41,23.582239314051307,26.2000263129968,0.9998688921425757,0.9999874762742463,1.0,recursive_calibrated_receiver

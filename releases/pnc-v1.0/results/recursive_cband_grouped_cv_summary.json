@@ -1,0 +1,380 @@
+{
+  "note": "Grouped CV on calibration rows only. Held-out rows are not used here.",
+  "input_file": "E:\\VS Code\\ISRS_S-C-L\\releases\\pnc-v1.0\\results\\recursive_cband_calibration_rows.csv",
+  "rows": 9,
+  "wavelength_groups": [
+    1535,
+    1550,
+    1560
+  ],
+  "span_groups": [
+    1,
+    4,
+    8
+  ],
+  "models": {
+    "none": {
+      "leave_one_wavelength_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.8121774794866201,
+          "mae_db": 0.7252333332703651,
+          "bias_db": -0.7252333332703651,
+          "max_abs_error_db": 1.264773566083047
+        },
+        "groups": [
+          {
+            "heldout_group": "1535",
+            "n": 3,
+            "rmse_db": 0.35529945716020217,
+            "mae_db": 0.28993135162245903,
+            "bias_db": -0.28993135162245903,
+            "max_abs_error_db": 0.575957548740746
+          },
+          {
+            "heldout_group": "1550",
+            "n": 3,
+            "rmse_db": 0.8531071670981396,
+            "mae_db": 0.8365504013729428,
+            "bias_db": -0.8365504013729428,
+            "max_abs_error_db": 1.069317238678963
+          },
+          {
+            "heldout_group": "1560",
+            "n": 3,
+            "rmse_db": 1.0605975823766383,
+            "mae_db": 1.0492182468156936,
+            "bias_db": -1.0492182468156936,
+            "max_abs_error_db": 1.264773566083047
+          }
+        ]
+      },
+      "leave_one_span_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.81217747948662,
+          "mae_db": 0.7252333332703651,
+          "bias_db": -0.7252333332703651,
+          "max_abs_error_db": 1.264773566083047
+        },
+        "groups": [
+          {
+            "heldout_group": "1",
+            "n": 3,
+            "rmse_db": 1.0123929784344086,
+            "mae_db": 0.9700161178342519,
+            "bias_db": -0.9700161178342519,
+            "max_abs_error_db": 1.264773566083047
+          },
+          {
+            "heldout_group": "4",
+            "n": 3,
+            "rmse_db": 0.721226004979432,
+            "mae_db": 0.6409220361866943,
+            "bias_db": -0.6409220361866943,
+            "max_abs_error_db": 0.9755636247068332
+          },
+          {
+            "heldout_group": "8",
+            "n": 3,
+            "rmse_db": 0.6586275742131001,
+            "mae_db": 0.5647618457901492,
+            "bias_db": -0.5647618457901492,
+            "max_abs_error_db": 0.9073175496572006
+          }
+        ]
+      }
+    },
+    "constant": {
+      "leave_one_wavelength_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.5113914100600231,
+          "mae_db": 0.43530198164790607,
+          "bias_db": 1.8503717077085943e-16,
+          "max_abs_error_db": 0.8396471233145807
+        },
+        "groups": [
+          {
+            "heldout_group": "1535",
+            "n": 3,
+            "rmse_db": 0.6844889333397182,
+            "mae_db": 0.6529529724718595,
+            "bias_db": 0.6529529724718595,
+            "max_abs_error_db": 0.8396471233145807
+          },
+          {
+            "heldout_group": "1550",
+            "n": 3,
+            "rmse_db": 0.23633898584792903,
+            "mae_db": 0.1669756021538664,
+            "bias_db": -0.1669756021538664,
+            "max_abs_error_db": 0.3997424394598864
+          },
+          {
+            "heldout_group": "1560",
+            "n": 3,
+            "rmse_db": 0.5100806865127939,
+            "mae_db": 0.48597737031799254,
+            "bias_db": -0.48597737031799254,
+            "max_abs_error_db": 0.7015326895853459
+          }
+        ]
+      },
+      "leave_one_span_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.4151221677239531,
+          "mae_db": 0.31965111962811704,
+          "bias_db": 1.9737298215558337e-16,
+          "max_abs_error_db": 0.7022318762307356
+        },
+        "groups": [
+          {
+            "heldout_group": "1",
+            "n": 3,
+            "rmse_db": 0.4677875052494159,
+            "mae_db": 0.38509710501094735,
+            "bias_db": -0.36717417684583004,
+            "max_abs_error_db": 0.6619316250946251
+          },
+          {
+            "heldout_group": "4",
+            "n": 3,
+            "rmse_db": 0.35409007628672406,
+            "mae_db": 0.2652500408885948,
+            "bias_db": 0.1264669456255065,
+            "max_abs_error_db": 0.5767896764653075
+          },
+          {
+            "heldout_group": "8",
+            "n": 3,
+            "rmse_db": 0.4156612926594093,
+            "mae_db": 0.308606212984809,
+            "bias_db": 0.24070723122032414,
+            "max_abs_error_db": 0.7022318762307356
+          }
+        ]
+      }
+    },
+    "wavelength_linear": {
+      "leave_one_wavelength_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.24309681596146815,
+          "mae_db": 0.1976906232914461,
+          "bias_db": 0.09610590418789168,
+          "max_abs_error_db": 0.414313016799935
+        },
+        "groups": [
+          {
+            "heldout_group": "1535",
+            "n": 3,
+            "rmse_db": 0.3065744016455979,
+            "mae_db": 0.26655708673126255,
+            "bias_db": 0.22761886595721367,
+            "max_abs_error_db": 0.414313016799935
+          },
+          {
+            "heldout_group": "1550",
+            "n": 3,
+            "rmse_db": 0.19043363575206626,
+            "mae_db": 0.13222901552782107,
+            "bias_db": -0.09104781770459587,
+            "max_abs_error_db": 0.3238146550106159
+          },
+          {
+            "heldout_group": "1560",
+            "n": 3,
+            "rmse_db": 0.2168763528412093,
+            "mae_db": 0.1942857676152547,
+            "bias_db": 0.15174666431105724,
+            "max_abs_error_db": 0.2936473614695503
+          }
+        ]
+      },
+      "leave_one_span_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.2691129847201753,
+          "mae_db": 0.24478278456388683,
+          "bias_db": 3.700743415417188e-17,
+          "max_abs_error_db": 0.4126609839444464
+        },
+        "groups": [
+          {
+            "heldout_group": "1",
+            "n": 3,
+            "rmse_db": 0.37173667512991876,
+            "mae_db": 0.36717417684583015,
+            "bias_db": -0.36717417684583015,
+            "max_abs_error_db": 0.4126609839444464
+          },
+          {
+            "heldout_group": "4",
+            "n": 3,
+            "rmse_db": 0.13503708021452385,
+            "mae_db": 0.12646694562550623,
+            "bias_db": 0.12646694562550623,
+            "max_abs_error_db": 0.17243462501263407
+          },
+          {
+            "heldout_group": "8",
+            "n": 3,
+            "rmse_db": 0.24666217173594623,
+            "mae_db": 0.24070723122032409,
+            "bias_db": 0.24070723122032409,
+            "max_abs_error_db": 0.3030803965979179
+          }
+        ]
+      }
+    },
+    "span_log_linear": {
+      "leave_one_wavelength_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.4815571966873682,
+          "mae_db": 0.4353019816479062,
+          "bias_db": 3.20731096002823e-16,
+          "max_abs_error_db": 0.7097362821494012
+        },
+        "groups": [
+          {
+            "heldout_group": "1535",
+            "n": 3,
+            "rmse_db": 0.6552123441200558,
+            "mae_db": 0.6529529724718596,
+            "bias_db": 0.6529529724718596,
+            "max_abs_error_db": 0.7097362821494012
+          },
+          {
+            "heldout_group": "1550",
+            "n": 3,
+            "rmse_db": 0.16942835078513818,
+            "mae_db": 0.16697560215386642,
+            "bias_db": -0.16697560215386642,
+            "max_abs_error_db": 0.20440711353907498
+          },
+          {
+            "heldout_group": "1560",
+            "n": 3,
+            "rmse_db": 0.48752724960469596,
+            "mae_db": 0.4859773703179922,
+            "bias_db": -0.4859773703179922,
+            "max_abs_error_db": 0.5408052208924663
+          }
+        ]
+      },
+      "leave_one_span_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.34193653797166307,
+          "mae_db": 0.31311643046862736,
+          "bias_db": -0.0687453281100698,
+          "max_abs_error_db": 0.5092472977912901
+        },
+        "groups": [
+          {
+            "heldout_group": "1",
+            "n": 3,
+            "rmse_db": 0.3394955305137953,
+            "mae_db": 0.3216302796804923,
+            "bias_db": -0.17677370085446495,
+            "max_abs_error_db": 0.47153114910326
+          },
+          {
+            "heldout_group": "4",
+            "n": 3,
+            "rmse_db": 0.33594344520962716,
+            "mae_db": 0.2805736315760377,
+            "bias_db": 0.05892456695148903,
+            "max_abs_error_db": 0.5092472977912901
+          },
+          {
+            "heldout_group": "8",
+            "n": 3,
+            "rmse_db": 0.35020932937599286,
+            "mae_db": 0.3371453801493521,
+            "bias_db": -0.08838685042723349,
+            "max_abs_error_db": 0.4309425542942849
+          }
+        ]
+      }
+    },
+    "wavelength_span_linear": {
+      "leave_one_wavelength_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.17167475448889338,
+          "mae_db": 0.15680444932428886,
+          "bias_db": 0.09610590418789186,
+          "max_abs_error_db": 0.2844021756347551
+        },
+        "groups": [
+          {
+            "heldout_group": "1535",
+            "n": 3,
+            "rmse_db": 0.23402132331714837,
+            "mae_db": 0.22761886595721356,
+            "bias_db": 0.22761886595721356,
+            "max_abs_error_db": 0.2844021756347551
+          },
+          {
+            "heldout_group": "1550",
+            "n": 3,
+            "rmse_db": 0.09547156353540465,
+            "mae_db": 0.09104781770459551,
+            "bias_db": -0.09104781770459551,
+            "max_abs_error_db": 0.12847932908980408
+          },
+          {
+            "heldout_group": "1560",
+            "n": 3,
+            "rmse_db": 0.15663928235108002,
+            "mae_db": 0.15174666431105754,
+            "bias_db": 0.15174666431105754,
+            "max_abs_error_db": 0.18210202970991296
+          }
+        ]
+      },
+      "leave_one_span_out": {
+        "overall": {
+          "n": 9,
+          "rmse_db": 0.1304453157810366,
+          "mae_db": 0.1094089858045117,
+          "bias_db": -0.06874532811007034,
+          "max_abs_error_db": 0.22226050795308283
+        },
+        "groups": [
+          {
+            "heldout_group": "1",
+            "n": 3,
+            "rmse_db": 0.18606509830706713,
+            "mae_db": 0.17677370085446698,
+            "bias_db": -0.17677370085446698,
+            "max_abs_error_db": 0.22226050795308283
+          },
+          {
+            "heldout_group": "4",
+            "n": 3,
+            "rmse_db": 0.07558590667207438,
+            "mae_db": 0.06306640613183456,
+            "bias_db": 0.058924566951489475,
+            "max_abs_error_db": 0.10489224633861616
+          },
+          {
+            "heldout_group": "8",
+            "n": 3,
+            "rmse_db": 0.10351082615931996,
+            "mae_db": 0.08838685042723354,
+            "bias_db": -0.08838685042723354,
+            "max_abs_error_db": 0.15746241418167506
+          }
+        ]
+      }
+    }
+  },
+  "best_model_by_leave_one_wavelength_out_rmse": "wavelength_span_linear",
+  "best_model_by_leave_one_span_out_rmse": "wavelength_span_linear",
+  "interpretation_rule": "Prefer a simple correction model that performs well in both grouped CV modes. If the best held-out model fails grouped CV, report recursive raw performance instead."
+}
