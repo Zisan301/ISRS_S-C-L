@@ -2,8 +2,8 @@
 
 Paper title: A reproducible recursive GSNR estimator for wideband optical links with power-aligned C-band GNPy verification
 Release tag recorded by this checkout: `joc-submission-v1.3`
-Commit recorded by this checkout: `216cb1f84a6e3088173b1874eceeed1c7f328ee5`
-Generated at: 2026-07-27T19:30:13.198552+00:00
+Commit recorded by this checkout: `95aba239d71f60c587ab42cd2709462d87764d2f`
+Generated at: 2026-07-27T19:35:52.951432+00:00
 
 ## Command expected from a clean clone
 
