@@ -24,7 +24,6 @@ REQUIRED_FILES = [
     "releases/pnc-v1.0/generated/joc_bias_audit_rows.csv",
     "releases/pnc-v1.0/generated/joc_bias_audit_summary.json",
     "releases/pnc-v1.0/generated/scl_external_validation_readiness.json",
-    "releases/pnc-v1.0/generated/joc_revision_reproduction_suite.json",
     "releases/pnc-v1.0/generated/joc_revision_assets/generated/joc_revision_numbers.tex",
     "releases/pnc-v1.0/generated/joc_revision_assets/generated/release_metadata.tex",
     "releases/pnc-v1.0/generated/joc_revision_assets/generated/table_condition_rmse.tex",
