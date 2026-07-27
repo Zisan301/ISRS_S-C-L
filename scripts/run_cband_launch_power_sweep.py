@@ -1,12 +1,11 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
-import math
-import os
 import re
 import subprocess
 import sys
 import sysconfig
+from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -21,191 +20,143 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from isrs_scl.link import LinkModel
-from isrs_scl.system.grid import build_grid
+from isrs_scl.system.grid import OpticalGrid, band_from_wavelength
 from isrs_scl.system.parameters import apply_defaults, validate_config
 
 C = 299792458.0
-
-TARGET_WAVELENGTHS_NM = [1535.0, 1550.0, 1560.0]
 SPANS = [1, 4, 8]
-REQUESTED_LAUNCH_POWERS_DBM = [-2.0, 0.0, 2.0]
+POWER_OFFSETS_DB = [-2.0, 0.0, 2.0]
+POWER_UNIFORMITY_TOLERANCE_DB = 0.10
 
 GENERATED = ROOT / "releases" / "pnc-v1.0" / "generated"
 RAW_DIR = GENERATED / "gnpy_cband_launch_power_raw"
 REFERENCE_ROWS = GENERATED / "cband_launch_power_sweep_reference_rows.csv"
 COMPARISON_ROWS = GENERATED / "cband_launch_power_sweep_model_comparison.csv"
+ANCHOR_ROWS = GENERATED / "cband_launch_power_sweep_anchor_comparison.csv"
 SUMMARY_JSON = GENERATED / "cband_launch_power_sweep_summary.json"
 
-SPECTRUM_PATH = ROOT / "external_validation" / "gnpy" / "cases" / "scl_9_targets_flat_spectrum.json"
+# This spectrum asks GNPy for S+C+L partitions. The default example equipment
+# propagates its supported C-band block (about 63 channels). We intentionally
+# use the propagated block and construct the model on the exact same frequencies.
+SPECTRUM_PATH = ROOT / "external_validation" / "gnpy" / "cases" / "scl_band_partition_flat_spectrum.json"
 NETWORK_TEMPLATE = ROOT / "external_validation" / "gnpy" / "cases" / "gnpy_flat_{spans}span_network.json"
+ANCHOR_WAVELENGTHS_NM = [1535.0, 1550.0, 1560.0]
 
 
-def p_label(power_dbm: float) -> str:
-    if power_dbm < 0:
-        return f"m{abs(power_dbm):.0f}"
-    if power_dbm > 0:
-        return f"p{power_dbm:.0f}"
+def offset_label(value: float) -> str:
+    if value < 0:
+        return f"m{abs(value):.0f}"
+    if value > 0:
+        return f"p{value:.0f}"
     return "p0"
 
 
 def read_text_robust(path: Path) -> str:
     data = path.read_bytes()
-    for enc in ["utf-8-sig", "utf-16", "utf-16-le", "cp1252"]:
+    for encoding in ("utf-8-sig", "utf-16", "utf-16-le", "cp1252"):
         try:
-            text = data.decode(enc)
+            text = data.decode(encoding)
             if "The GSNR per channel" in text or "Channel frequency" in text:
                 return text.replace("\x00", "")
         except UnicodeDecodeError:
-            pass
+            continue
     return data.decode("utf-8", errors="replace").replace("\x00", "")
 
 
-def parse_gnpy_rows(path: Path) -> list[dict[str, float]]:
+def parse_gnpy_rows(path: Path) -> pd.DataFrame:
     clean = re.sub(r"\x1b\[[0-9;]*m", "", read_text_robust(path))
-    rows: list[dict[str, float]] = []
-
+    records: list[dict[str, float | int]] = []
+    pattern = re.compile(
+        r"\s*(\d+)\s+([0-9.]+)\s+(-?[0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\s*$"
+    )
     for line in clean.splitlines():
-        m = re.match(
-            r"\s*(\d+)\s+([0-9.]+)\s+(-?[0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\s*$",
-            line,
-        )
-        if not m:
+        match = pattern.match(line)
+        if not match:
             continue
-
-        freq_thz = float(m.group(2))
-        wl_nm = C / (freq_thz * 1e12) * 1e9
-
-        rows.append(
+        frequency_thz = float(match.group(2))
+        records.append(
             {
-                "channel": int(m.group(1)),
-                "frequency_thz": freq_thz,
-                "wavelength_nm": wl_nm,
-                "channel_power_dbm": float(m.group(3)),
-                "osnr_ase_signal_bw_db": float(m.group(4)),
-                "snr_nli_signal_bw_db": float(m.group(5)),
-                "gnpy_gsnr_db": float(m.group(6)),
+                "channel": int(match.group(1)),
+                "frequency_thz": frequency_thz,
+                "wavelength_nm": C / (frequency_thz * 1e12) * 1e9,
+                "gnpy_channel_power_dbm": float(match.group(3)),
+                "osnr_ase_signal_bw_db": float(match.group(4)),
+                "snr_nli_signal_bw_db": float(match.group(5)),
+                "gnpy_gsnr_db": float(match.group(6)),
             }
         )
-
-    if not rows:
+    if not records:
         raise RuntimeError(f"No GNPy channel rows found in {path}")
-
-    return rows
-
-
-def nearest_rows_for_targets(
-    rows: list[dict[str, float]],
-    targets_nm: list[float],
-    max_error_nm: float = 1.0,
-) -> list[dict[str, float]]:
-    selected: list[dict[str, float]] = []
-    used_channels: set[int] = set()
-
-    for target in targets_nm:
-        nearest = min(rows, key=lambda row: abs(float(row["wavelength_nm"]) - target))
-        err = abs(float(nearest["wavelength_nm"]) - target)
-
-        if err > max_error_nm:
-            raise RuntimeError(
-                f"Target {target:.3f} nm not found within {max_error_nm:.3f} nm; "
-                f"nearest was {nearest['wavelength_nm']:.6f} nm"
-            )
-
-        ch = int(nearest["channel"])
-        if ch in used_channels:
-            raise RuntimeError(
-                f"Duplicate GNPy channel {ch} selected for target {target:.3f} nm"
-            )
-
-        used_channels.add(ch)
-
-        item = dict(nearest)
-        item["target_wavelength_nm"] = target
-        item["target_error_nm"] = float(nearest["wavelength_nm"]) - target
-        selected.append(item)
-
-    return selected
+    frame = pd.DataFrame(records).sort_values("frequency_thz").reset_index(drop=True)
+    if len(frame) < 3:
+        raise RuntimeError(f"Expected a loaded C-band block, found only {len(frame)} channels in {path}")
+    return frame
 
 
-def load_config() -> dict[str, Any]:
-    config_path = ROOT / "config_q2_final.yaml"
-    raw = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+def exact_grid_from_gnpy(frame: pd.DataFrame) -> OpticalGrid:
+    reported = frame["frequency_thz"].to_numpy(float) * 1e12
+    spacing = float(np.median(np.diff(reported)))
+    if spacing <= 0:
+        raise RuntimeError("GNPy frequencies are not strictly increasing")
+    # Printed GNPy frequencies are rounded. Rebuild an exact uniform grid from
+    # the first printed frequency and the median channel spacing.
+    frequencies = reported[0] + spacing * np.arange(reported.size, dtype=float)
+    wavelengths = C / frequencies * 1e9
+    bands = band_from_wavelength(wavelengths)
+    if np.any(bands != "C"):
+        raise RuntimeError("The propagated GNPy block is not purely C band")
+    return OpticalGrid(frequencies, wavelengths, bands, spacing, "gnpy_matched_cband")
+
+
+def load_matched_config() -> dict[str, Any]:
+    path = ROOT / "config_q2_final.yaml"
+    raw = yaml.safe_load(path.read_text(encoding="utf-8"))
     cfg = apply_defaults(raw)
-    validate_config(cfg, base_dir=config_path.parent)
+    cfg = deepcopy(cfg)
+    # Align the explicitly known operating conditions with the GNPy spectrum
+    # and topology used here. Device-internal models remain independently
+    # implemented and are not claimed to be identical.
+    cfg["modulation"]["symbol_rate_gbaud"] = 32.0
+    cfg["modulation"]["roll_off"] = 0.15
+    cfg["fiber"]["span_length_km"] = 80.0
+    cfg["fiber"]["attenuation_anchors"] = {
+        "wavelength_nm": [1460.0, 1530.0, 1550.0, 1565.0, 1625.0],
+        "db_per_km": [0.2, 0.2, 0.2, 0.2, 0.2],
+    }
+    cfg["raman"]["pumps"] = []
+    cfg["nli"]["transceiver_snr_db"] = 40.0
+    validate_config(cfg, base_dir=path.parent)
     return cfg
 
 
-def metric_dict(values: list[float]) -> dict[str, float | int | None]:
-    if not values:
-        return {
-            "n": 0,
-            "rmse_db": None,
-            "mae_db": None,
-            "bias_db": None,
-            "max_abs_error_db": None,
-        }
-
-    arr = np.asarray(values, dtype=float)
-    return {
-        "n": int(arr.size),
-        "rmse_db": float(np.sqrt(np.mean(arr**2))),
-        "mae_db": float(np.mean(np.abs(arr))),
-        "bias_db": float(np.mean(arr)),
-        "max_abs_error_db": float(np.max(np.abs(arr))),
-    }
-
-
-def grouped_metrics(df: pd.DataFrame, group_col: str) -> dict[str, dict[str, float | int | None]]:
-    out: dict[str, dict[str, float | int | None]] = {}
-    for key, group in df.groupby(group_col):
-        out[str(key)] = metric_dict(group["residual_db"].astype(float).tolist())
-    return out
-
-
-def locate_gnpy_transmission_exe() -> Path:
+def locate_gnpy_executable() -> Path:
     scripts_dir = Path(sysconfig.get_path("scripts"))
-    candidates = [
-        scripts_dir / "gnpy-transmission-example.exe",
-        scripts_dir / "gnpy-transmission-example",
-    ]
-
-    for candidate in candidates:
+    for name in ("gnpy-transmission-example.exe", "gnpy-transmission-example"):
+        candidate = scripts_dir / name
         if candidate.exists():
             return candidate
-
-    raise RuntimeError(
-        "Could not find gnpy-transmission-example executable. "
-        "Check that GNPy is installed in the active Python environment."
-    )
+    raise RuntimeError("GNPy executable not found in the active Python environment")
 
 
-def run_gnpy_case(
-    gnpy_exe: Path,
-    spans: int,
-    requested_launch_power_dbm: float,
-) -> Path:
+def run_gnpy_case(executable: Path, spans: int, offset_db: float) -> Path:
     network = Path(str(NETWORK_TEMPLATE).format(spans=spans))
     if not network.exists():
-        raise RuntimeError(f"Missing GNPy network file: {network}")
-
+        raise RuntimeError(f"Missing GNPy network: {network}")
     if not SPECTRUM_PATH.exists():
-        raise RuntimeError(f"Missing GNPy spectrum file: {SPECTRUM_PATH}")
-
+        raise RuntimeError(f"Missing GNPy spectrum: {SPECTRUM_PATH}")
     RAW_DIR.mkdir(parents=True, exist_ok=True)
-    raw_path = RAW_DIR / f"gnpy_cband_launch_{p_label(requested_launch_power_dbm)}_{spans}span.txt"
-
+    raw_path = RAW_DIR / f"gnpy_cband_offset_{offset_label(offset_db)}_{spans}span.txt"
     command = [
-        str(gnpy_exe),
+        str(executable),
         "--show-channels",
         "-po",
-        f"{requested_launch_power_dbm:.2f}",
+        f"{offset_db:.2f}",
         "--spectrum",
         str(SPECTRUM_PATH),
         str(network),
         "Site_A",
         "Site_B",
     ]
-
     completed = subprocess.run(
         command,
         cwd=ROOT,
@@ -214,83 +165,117 @@ def run_gnpy_case(
         stderr=subprocess.STDOUT,
         check=False,
     )
-
     raw_path.write_text(completed.stdout, encoding="utf-8")
-
     if completed.returncode != 0:
-        raise RuntimeError(
-            f"GNPy command failed for spans={spans}, power={requested_launch_power_dbm} dBm. "
-            f"Output saved to {raw_path}"
-        )
-
+        raise RuntimeError(f"GNPy failed for spans={spans}, offset={offset_db:+.1f} dB; see {raw_path}")
     return raw_path
+
+
+def metric_dict(residuals: np.ndarray) -> dict[str, float | int]:
+    values = np.asarray(residuals, dtype=float)
+    return {
+        "n": int(values.size),
+        "rmse_db": float(np.sqrt(np.mean(values**2))),
+        "mae_db": float(np.mean(np.abs(values))),
+        "bias_db": float(np.mean(values)),
+        "max_abs_error_db": float(np.max(np.abs(values))),
+    }
+
+
+def grouped_metrics(frame: pd.DataFrame, column: str) -> dict[str, dict[str, float | int]]:
+    output: dict[str, dict[str, float | int]] = {}
+    for key, group in frame.groupby(column, sort=True):
+        output[str(key)] = metric_dict(group["residual_db"].to_numpy(float))
+    return output
+
+
+def nearest_anchor_rows(frame: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for (offset, spans), group in frame.groupby(["requested_power_offset_db", "spans"], sort=True):
+        for target in ANCHOR_WAVELENGTHS_NM:
+            index = (group["gnpy_wavelength_nm"] - target).abs().idxmin()
+            row = group.loc[index].copy()
+            row["requested_anchor_wavelength_nm"] = target
+            rows.append(row)
+    return pd.DataFrame(rows)
 
 
 def main() -> int:
     GENERATED.mkdir(parents=True, exist_ok=True)
-    RAW_DIR.mkdir(parents=True, exist_ok=True)
-
-    gnpy_exe = locate_gnpy_transmission_exe()
-    cfg = load_config()
-    grid = build_grid(cfg["grid"])
-    link = LinkModel(grid, cfg)
+    executable = locate_gnpy_executable()
+    cfg = load_matched_config()
 
     reference_records: list[dict[str, Any]] = []
     comparison_records: list[dict[str, Any]] = []
+    audit_records: list[dict[str, Any]] = []
 
-    for requested_power in REQUESTED_LAUNCH_POWERS_DBM:
-        launch_w = link.flat_launch_w(float(requested_power))
-
+    for offset_db in POWER_OFFSETS_DB:
         for spans in SPANS:
-            raw_path = run_gnpy_case(gnpy_exe, spans, requested_power)
-            parsed = parse_gnpy_rows(raw_path)
-            targets = nearest_rows_for_targets(parsed, TARGET_WAVELENGTHS_NM)
+            raw_path = run_gnpy_case(executable, spans, offset_db)
+            gnpy = parse_gnpy_rows(raw_path)
+            grid = exact_grid_from_gnpy(gnpy)
 
-            result = link.evaluate_recursive(launch_w, spans)
+            power_values = gnpy["gnpy_channel_power_dbm"].to_numpy(float)
+            effective_power_dbm = float(np.median(power_values))
+            spread_db = float(np.max(power_values) - np.min(power_values))
+            if spread_db > POWER_UNIFORMITY_TOLERANCE_DB:
+                raise RuntimeError(
+                    f"GNPy channel power spread {spread_db:.3f} dB exceeds "
+                    f"{POWER_UNIFORMITY_TOLERANCE_DB:.3f} dB for offset={offset_db}, spans={spans}"
+                )
 
-            for item in targets:
-                target_wl = float(item["target_wavelength_nm"])
-                matched_wl_gnpy = float(item["wavelength_nm"])
-                grid_index = int(grid.nearest_index_nm(matched_wl_gnpy))
-                matched_wl_model = float(grid.wavelengths_nm[grid_index])
+            link = LinkModel(grid, cfg)
+            launch = link.flat_launch_w(effective_power_dbm)
+            result = link.evaluate_recursive(launch, spans)
 
-                model_gsnr = float(result.gsnr_db[grid_index])
+            audit_records.append(
+                {
+                    "requested_power_offset_db": offset_db,
+                    "spans": spans,
+                    "gnpy_effective_channel_power_dbm": effective_power_dbm,
+                    "model_launch_power_dbm": effective_power_dbm,
+                    "channel_power_spread_db": spread_db,
+                    "channels": int(len(gnpy)),
+                    "raw_file": str(raw_path.relative_to(ROOT)).replace("\\", "/"),
+                }
+            )
+
+            for row_index, item in gnpy.iterrows():
+                model_wavelength = float(grid.wavelengths_nm[row_index])
+                model_gsnr = float(result.gsnr_db[row_index])
                 reference_gsnr = float(item["gnpy_gsnr_db"])
                 residual = model_gsnr - reference_gsnr
-
-                source_id = (
-                    f"gnpy_cband_power_{p_label(requested_power)}_"
-                    f"{spans}span_requested_{target_wl:.0f}nm_gsnr"
-                )
+                source_id = f"gnpy_matched_offset_{offset_label(offset_db)}_{spans}span_ch{int(item['channel'])}"
 
                 reference_records.append(
                     {
                         "source_id": source_id,
                         "source_type": "GNPy",
                         "tool_version": "2.14.1",
-                        "provenance_reference": str(raw_path.relative_to(ROOT)).replace("\\", "/"),
-                        "requested_launch_power_dbm": requested_power,
+                        "requested_power_offset_db": offset_db,
+                        "gnpy_effective_channel_power_dbm": effective_power_dbm,
                         "spans": spans,
-                        "target_wavelength_nm": target_wl,
-                        "gnpy_wavelength_nm": matched_wl_gnpy,
-                        "target_error_nm": float(item["target_error_nm"]),
-                        "channel_frequency_thz": float(item["frequency_thz"]),
-                        "gnpy_channel_power_dbm": float(item["channel_power_dbm"]),
+                        "channel": int(item["channel"]),
+                        "frequency_thz": float(item["frequency_thz"]),
+                        "gnpy_wavelength_nm": float(item["wavelength_nm"]),
                         "osnr_ase_signal_bw_db": float(item["osnr_ase_signal_bw_db"]),
                         "snr_nli_signal_bw_db": float(item["snr_nli_signal_bw_db"]),
                         "gnpy_gsnr_db": reference_gsnr,
+                        "provenance_reference": str(raw_path.relative_to(ROOT)).replace("\\", "/"),
                     }
                 )
-
                 comparison_records.append(
                     {
                         "source_id": source_id,
-                        "requested_launch_power_dbm": requested_power,
+                        "requested_power_offset_db": offset_db,
+                        "gnpy_effective_channel_power_dbm": effective_power_dbm,
+                        "model_launch_power_dbm": effective_power_dbm,
                         "spans": spans,
-                        "target_wavelength_nm": target_wl,
-                        "gnpy_wavelength_nm": matched_wl_gnpy,
-                        "model_matched_wavelength_nm": matched_wl_model,
-                        "wavelength_error_model_minus_gnpy_nm": matched_wl_model - matched_wl_gnpy,
+                        "channel": int(item["channel"]),
+                        "frequency_thz": float(item["frequency_thz"]),
+                        "gnpy_wavelength_nm": float(item["wavelength_nm"]),
+                        "model_wavelength_nm": model_wavelength,
+                        "wavelength_error_nm": model_wavelength - float(item["wavelength_nm"]),
                         "gnpy_gsnr_db": reference_gsnr,
                         "model_recursive_gsnr_db": model_gsnr,
                         "residual_db": residual,
@@ -298,49 +283,67 @@ def main() -> int:
                     }
                 )
 
-    ref_df = pd.DataFrame(reference_records)
-    cmp_df = pd.DataFrame(comparison_records)
+    reference = pd.DataFrame(reference_records)
+    comparison = pd.DataFrame(comparison_records)
+    audit = pd.DataFrame(audit_records)
+    anchors = nearest_anchor_rows(comparison)
 
-    ref_df.to_csv(REFERENCE_ROWS, index=False)
-    cmp_df.to_csv(COMPARISON_ROWS, index=False)
+    reference.to_csv(REFERENCE_ROWS, index=False)
+    comparison.to_csv(COMPARISON_ROWS, index=False)
+    anchors.to_csv(ANCHOR_ROWS, index=False)
 
-    residuals = cmp_df["residual_db"].astype(float).tolist()
+    condition_metrics = []
+    for (offset, spans), group in comparison.groupby(["requested_power_offset_db", "spans"], sort=True):
+        metrics = metric_dict(group["residual_db"].to_numpy(float))
+        audit_row = audit[(audit["requested_power_offset_db"] == offset) & (audit["spans"] == spans)].iloc[0]
+        condition_metrics.append(
+            {
+                "requested_power_offset_db": float(offset),
+                "gnpy_effective_channel_power_dbm": float(audit_row["gnpy_effective_channel_power_dbm"]),
+                "spans": int(spans),
+                **metrics,
+            }
+        )
+
     summary = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "note": (
-            "Compact C-band launch-power robustness experiment. "
-            "This does not provide full S+C+L validation."
+            "Power- and loading-aligned C-band cross-tool robustness study. "
+            "The model uses the exact GNPy-propagated C-band frequencies, the GNPy-reported effective "
+            "channel power, 32 GBd, roll-off 0.15, 80-km spans, 0.2 dB/km loss, no external Raman pumps, "
+            "and 40 dB transceiver SNR. Device-internal models remain independently implemented."
         ),
-        "targets_nm": TARGET_WAVELENGTHS_NM,
+        "requested_power_offsets_db": POWER_OFFSETS_DB,
         "spans": SPANS,
-        "requested_launch_powers_dbm": REQUESTED_LAUNCH_POWERS_DBM,
-        "rows": int(len(cmp_df)),
-        "overall": metric_dict(residuals),
-        "by_launch_power_dbm": grouped_metrics(cmp_df, "requested_launch_power_dbm"),
-        "by_span": grouped_metrics(cmp_df, "spans"),
-        "by_target_wavelength_nm": grouped_metrics(cmp_df, "target_wavelength_nm"),
+        "channels_per_condition": int(comparison["channel"].nunique()),
+        "operating_conditions": int(len(condition_metrics)),
+        "rows": int(len(comparison)),
+        "overall": metric_dict(comparison["residual_db"].to_numpy(float)),
+        "by_requested_power_offset_db": grouped_metrics(comparison, "requested_power_offset_db"),
+        "by_effective_launch_power_dbm": grouped_metrics(comparison, "gnpy_effective_channel_power_dbm"),
+        "by_span": grouped_metrics(comparison, "spans"),
+        "condition_metrics": condition_metrics,
+        "power_reference_audit": audit.to_dict(orient="records"),
+        "max_abs_wavelength_error_nm": float(np.max(np.abs(comparison["wavelength_error_nm"].to_numpy(float)))),
         "outputs": {
             "reference_rows": str(REFERENCE_ROWS.relative_to(ROOT)),
             "comparison_rows": str(COMPARISON_ROWS.relative_to(ROOT)),
-            "summary_json": str(SUMMARY_JSON.relative_to(ROOT)),
+            "anchor_rows": str(ANCHOR_ROWS.relative_to(ROOT)),
             "raw_output_dir": str(RAW_DIR.relative_to(ROOT)),
         },
         "claim_policy": (
-            "Use this as C-band launch-power robustness evidence only. "
-            "Do not claim S+C+L external validation from this experiment."
+            "This supports C-band cross-tool robustness under aligned power and loading. "
+            "It does not establish full S+C+L, SSFM, experimental, or identical-device-model validation."
         ),
     }
-
     SUMMARY_JSON.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-
     print(json.dumps(summary, indent=2))
-    print()
-    print(f"Wrote: {REFERENCE_ROWS}")
-    print(f"Wrote: {COMPARISON_ROWS}")
-    print(f"Wrote: {SUMMARY_JSON}")
-
+    print(f"Wrote {COMPARISON_ROWS}")
+    print(f"Wrote {ANCHOR_ROWS}")
+    print(f"Wrote {SUMMARY_JSON}")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
